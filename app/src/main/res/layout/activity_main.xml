@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="#050B12">
 
     <LinearLayout
@@ -11,41 +9,121 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- ÜST MENÜ -->
+        <!-- Üst Menü -->
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="#0097A7"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="16dp">
 
             <ImageView
-                android:id="@+id/menuIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_centerVertical="true"
                 android:src="@android:drawable/ic_menu_sort_by_size"
-                android:tint="#FFFFFF" />
+                android:tint="#FFFFFF"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="70dp"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
                 android:text="Media IPTV Player"
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <ImageView
-                android:id="@+id/searchIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
                 android:src="@android:drawable/ic_menu_search"
-                android:tint="#FFFFFF" />
+                android:tint="#FFFFFF"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <!--
+        <!-- Karşılama -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="24dp"
+            android:text="Hoş Geldiniz"
+            android:textColor="#FFFFFF"
+            android:textSize="36sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="Media IPTV Player"
+            android:textColor="#00BCD4"
+            android:textSize="30sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="24dp"
+            android:text="Canlı TV, filmler ve dizileri kolayca izleyin."
+            android:textColor="#BBBBBB"
+            android:textSize="18sp"/>
+
+        <!-- Canlı TV -->
+
+        <Button
+            android:id="@+id/cardLive"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_margin="16dp"
+            android:text="CANLI TV"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:backgroundTint="#151D26"/>
+
+        <!-- Filmler -->
+
+        <Button
+            android:id="@+id/cardMovies"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="FİLMLER"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:backgroundTint="#151D26"/>
+
+        <!-- Diziler -->
+
+        <Button
+            android:id="@+id/cardSeries"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_margin="16dp"
+            android:text="DİZİLER"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:backgroundTint="#151D26"/>
+
+        <!-- Ayarlar -->
+
+        <Button
+            android:id="@+id/cardSettings"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="30dp"
+            android:text="AYARLAR"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:backgroundTint="#151D26"/>
+
+    </LinearLayout>
+
+</ScrollView>

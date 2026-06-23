@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Üst Başlık -->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -21,6 +23,8 @@
             android:textSize="28sp"
             android:textStyle="bold"/>
 
+        <!-- Liste Adı -->
+
         <EditText
             android:id="@+id/etPlaylistName"
             android:layout_width="match_parent"
@@ -28,9 +32,11 @@
             android:layout_margin="16dp"
             android:background="#1A1A1A"
             android:hint="Liste Adı"
-            android:hintTextColor="#888888"
-            android:padding="16dp"
-            android:textColor="#FFFFFF"/>
+            android:textColorHint="#888888"
+            android:textColor="#FFFFFF"
+            android:padding="16dp"/>
+
+        <!-- URL -->
 
         <EditText
             android:id="@+id/etPlaylistUrl"
@@ -40,9 +46,11 @@
             android:layout_marginEnd="16dp"
             android:background="#1A1A1A"
             android:hint="http://..."
-            android:hintTextColor="#888888"
-            android:padding="16dp"
-            android:textColor="#FFFFFF"/>
+            android:textColorHint="#888888"
+            android:textColor="#FFFFFF"
+            android:padding="16dp"/>
+
+        <!-- Kaydet -->
 
         <Button
             android:id="@+id/btnSaveM3u"

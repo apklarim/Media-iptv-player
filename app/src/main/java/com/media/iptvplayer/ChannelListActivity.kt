@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class ChannelListActivity : AppCompatActivity() {
@@ -24,13 +25,39 @@ class ChannelListActivity : AppCompatActivity() {
             intent.getStringExtra("playlistName")
                 ?: "Kanal Listesi"
 
-        val names =
+        if (ChannelRepository.channels.isEmpty()) {
+
+            Toast.makeText(
+                this,
+                "Hiç kanal bulunamadı",
+                Toast.LENGTH_LONG
+            ).show()
+
+            listView.adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                listOf(
+                    "Kanal bulunamadı",
+                    "M3U URL kontrol edin"
+                )
+            )
+
+            return
+        }
+
+        Toast.makeText(
+            this,
+            "Toplam kanal: ${ChannelRepository.channels.size}",
+            Toast.LENGTH_LONG
+        ).show()
+
+        val channelNames =
             ChannelRepository.channels.map { it.name }
 
         listView.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
-            names
+            channelNames
         )
     }
 }

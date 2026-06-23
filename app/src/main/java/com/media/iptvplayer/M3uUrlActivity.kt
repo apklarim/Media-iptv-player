@@ -1,5 +1,6 @@
 package com.media.iptvplayer
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -24,9 +25,9 @@ class M3uUrlActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSaveM3u)
             .setOnClickListener {
 
-                val name = etName.text.toString()
+                val name = etName.text.toString().trim()
 
-                val url = etUrl.text.toString()
+                val url = etUrl.text.toString().trim()
 
                 if (name.isEmpty() || url.isEmpty()) {
 
@@ -41,7 +42,6 @@ class M3uUrlActivity : AppCompatActivity() {
 
                 PlaylistManager.addPlaylist(
                     this,
-
                     Playlist(
                         name = name,
                         type = "M3U",
@@ -54,6 +54,13 @@ class M3uUrlActivity : AppCompatActivity() {
                     "Liste kaydedildi",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                startActivity(
+                    Intent(
+                        this,
+                        PlaylistListActivity::class.java
+                    )
+                )
 
                 finish()
             }

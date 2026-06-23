@@ -1,6 +1,7 @@
 package com.media.iptvplayer
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -22,6 +23,11 @@ class PlaylistListActivity : AppCompatActivity() {
         loadPlaylists()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadPlaylists()
+    }
+
     private fun loadPlaylists() {
 
         val playlists =
@@ -30,23 +36,28 @@ class PlaylistListActivity : AppCompatActivity() {
         val names =
             playlists.map { "${it.name} (${it.type})" }
 
-        val adapter = ArrayAdapter(
+        listView.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
             names
         )
 
-        listView.adapter = adapter
-
-        // Tıklama
+        // Normal tıklama
 
         listView.setOnItemClickListener { _, _, position, _ ->
 
-            Toast.makeText(
-                this,
-                playlists[position].name,
-                Toast.LENGTH_SHORT
-            ).show()
+            val intent =
+                Intent(
+                    this,
+                    ChannelListActivity::class.java
+                )
+
+            intent.putExtra(
+                "playlistName",
+                playlists[position].name
+            )
+
+            startActivity(intent)
         }
 
         // Uzun basma
@@ -79,12 +90,6 @@ class PlaylistListActivity : AppCompatActivity() {
                                 this,
                                 playlists[position].id
                             )
-
-                            Toast.makeText(
-                                this,
-                                "Liste silindi",
-                                Toast.LENGTH_SHORT
-                            ).show()
 
                             loadPlaylists()
                         }

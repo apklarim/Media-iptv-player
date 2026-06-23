@@ -14,6 +14,10 @@
         android:theme="@style/Theme.MediaIPTVPlayer">
 
         <activity
+            android:name=".ChannelListActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".XtreamActivity"
             android:exported="false" />
 

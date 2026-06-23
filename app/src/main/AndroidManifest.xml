@@ -8,7 +8,7 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@android:drawable/sym_def_app_icon"
         android:label="Media IPTV Player"
         android:supportsRtl="true"
         android:theme="@style/Theme.MediaIPTVPlayer">

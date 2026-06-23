@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class ChannelListActivity : AppCompatActivity() {
@@ -21,30 +20,17 @@ class ChannelListActivity : AppCompatActivity() {
         val listView =
             findViewById<ListView>(R.id.listChannels)
 
-        val playlistName =
+        title.text =
             intent.getStringExtra("playlistName")
                 ?: "Kanal Listesi"
 
-        title.text = playlistName
-
-        if (ChannelRepository.channels.isEmpty()) {
-
-            Toast.makeText(
-                this,
-                "Henüz kanal yüklenmedi",
-                Toast.LENGTH_LONG
-            ).show()
-
-            return
-        }
-
-        val channelNames =
+        val names =
             ChannelRepository.channels.map { it.name }
 
         listView.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
-            channelNames
+            names
         )
     }
 }

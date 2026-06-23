@@ -15,95 +15,79 @@ import kotlinx.coroutines.withContext
 class M3uUrlActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_m3u_url)
 
-        val etName =
-            findViewById<EditText>(R.id.etPlaylistName)
+        val etName = findViewById<EditText>(R.id.etPlaylistName)
+        val etUrl = findViewById<EditText>(R.id.etPlaylistUrl)
+        val btnSave = findViewById<Button>(R.id.btnSaveM3u)
 
-        val etUrl =
-            findViewById<EditText>(R.id.etPlaylistUrl)
+        btnSave.setOnClickListener {
 
-        findViewById<Button>(R.id.btnSaveM3u)
-            .setOnClickListener {
+            val name = etName.text.toString().trim()
+            val url = etUrl.text.toString().trim()
 
-                val name =
-                    etName.text.toString().trim()
+            if (name.isEmpty() || url.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "Lütfen tüm alanları doldurun",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
 
-                val url =
-                    etUrl.text.toString().trim()
+            lifecycleScope.launch {
 
-                if (name.isEmpty() || url.isEmpty()) {
+                try {
 
                     Toast.makeText(
-                        this,
-                        "Lütfen tüm alanları doldurun",
+                        this@M3uUrlActivity,
+                        "Liste yükleniyor...",
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    return@setOnClickListener
-                }
-
-                lifecycleScope.launch {
-
-                    try {
-
-                        Toast.makeText(
-                            this@M3uUrlActivity,
-                            "Liste yükleniyor...",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        val content =
-                            withContext(Dispatchers.IO) {
-
-                                NetworkUtils.downloadText(url)
-                            }
-
-                        val channels =
-                            M3uParser.parse(content)
-
-                        ChannelRepository.channels =
-                            channels
-
-                        PlaylistManager.addPlaylist(
-                            this@M3uUrlActivity,
-                            Playlist(
-                                name = name,
-                                type = "M3U",
-                                url = url
-                            )
-                        )
-
-                        Toast.makeText(
-                            this@M3uUrlActivity,
-                            "${channels.size} kanal yüklendi",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        startActivity(
-                            Intent(
-                                this@M3uUrlActivity,
-                                ChannelListActivity::class.java
-                            ).putExtra(
-                                "playlistName",
-                                name
-                            )
-                        )
-
-                        finish()
-
-                    } catch (e: Exception) {
-
-                        Toast.makeText(
-                            this@M3uUrlActivity,
-                            "Liste yüklenemedi:\n${e.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                    val content = withContext(Dispatchers.IO) {
+                        NetworkUtils.downloadText(url)
                     }
+
+                    val channels = M3uParser.parse(content)
+
+                    ChannelRepository.channels = channels
+
+                    PlaylistManager.addPlaylist(
+                        this@M3uUrlActivity,
+                        Playlist(
+                            name = name,
+                            type = "M3U",
+                            url = url
+                        )
+                    )
+
+                    Toast.makeText(
+                        this@M3uUrlActivity,
+                        "Yüklenen kanal sayısı: ${channels.size}",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    startActivity(
+                        Intent(
+                            this@M3uUrlActivity,
+                            ChannelListActivity::class.java
+                        ).putExtra("playlistName", name)
+                    )
+
+                    finish()
+
+                } catch (e: Exception) {
+
+                    Toast.makeText(
+                        this@M3uUrlActivity,
+                        "Hata: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
+        }
     }
 }

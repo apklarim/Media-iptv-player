@@ -1,20 +1,19 @@
 package com.media.iptvplayer
 
+import android.util.Log
 import com.media.iptvplayer.model.Channel
 
 object M3uParser {
 
     fun parse(content: String): List<Channel> {
 
+        Log.d("M3U_TEST", "Dosya boyutu = ${content.length}")
+
         val channels = mutableListOf<Channel>()
 
-        val lines = content
-            .replace("\r\n", "\n")
-            .replace("\r", "\n")
-            .split("\n")
+        val lines = content.lines()
 
         var currentName = ""
-        var currentGroup = ""
 
         for (lineRaw in lines) {
 
@@ -22,14 +21,14 @@ object M3uParser {
 
             if (line.startsWith("#EXTINF")) {
 
-                currentName = line.substringAfterLast(",")
+                currentName =
+                    line.substringAfterLast(",")
+                        .trim()
 
-                currentGroup =
-                    Regex("""group-title="([^"]*)"""")
-                        .find(line)
-                        ?.groupValues
-                        ?.get(1)
-                        ?: ""
+                Log.d(
+                    "M3U_TEST",
+                    "Kanal adı = $currentName"
+                )
             }
 
             else if (
@@ -37,25 +36,31 @@ object M3uParser {
                 line.startsWith("https://")
             ) {
 
-                channels.add(
-                    Channel(
-                        name = currentName.ifBlank {
-                            "İsimsiz Kanal"
-                        },
-
-                        url = line,
-
-                        group = currentGroup,
-
-                        logo = ""
-                    )
+                Log.d(
+                    "M3U_TEST",
+                    "URL bulundu = $line"
                 )
 
-                currentName = ""
-                currentGroup = ""
+                channels.add(
+                    Channel(
+                        name =
+                        if (currentName.isEmpty())
+                            "İsimsiz Kanal"
+                        else currentName,
+
+                        url = line,
+                        logo = "",
+                        group = ""
+                    )
+                )
             }
         }
 
+        Log.d(
+            "M3U_TEST",
+            "Toplam kanal = ${channels.size}"
+        )
+
         return channels
     }
-                          }
+}

@@ -1,5 +1,6 @@
 package com.media.iptvplayer
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -103,6 +104,51 @@ class PlaylistListActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+        }
+
+        // Uzun basınca menü
+
+        listView.setOnItemLongClickListener { _, _, position, _ ->
+
+            val playlist = playlists[position]
+
+            AlertDialog.Builder(this)
+                .setTitle(playlist.name)
+                .setItems(
+                    arrayOf(
+                        "Düzenle",
+                        "Sil",
+                        "İptal"
+                    )
+                ) { dialog, which ->
+
+                    when (which) {
+
+                        0 -> {
+
+                            Toast.makeText(
+                                this,
+                                "Düzenleme yakında eklenecek",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        1 -> {
+
+                            PlaylistManager.deletePlaylist(
+                                this,
+                                playlist.id
+                            )
+
+                            recreate()
+                        }
+                    }
+
+                    dialog.dismiss()
+                }
+                .show()
+
+            true
         }
     }
 }

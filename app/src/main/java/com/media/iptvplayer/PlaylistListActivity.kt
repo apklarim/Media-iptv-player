@@ -39,6 +39,11 @@ class PlaylistListActivity : AppCompatActivity() {
             )
         }
 
+        loadPlaylists(listView)
+    }
+
+    private fun loadPlaylists(listView: ListView) {
+
         val playlists =
             PlaylistManager.getPlaylists(this)
 
@@ -197,7 +202,9 @@ class PlaylistListActivity : AppCompatActivity() {
                                                 Toast.LENGTH_SHORT
                                             ).show()
 
-                                            recreate()
+                                            loadPlaylists(
+                                                listView
+                                            )
                                         }
                                     }
                                 }
@@ -225,7 +232,9 @@ class PlaylistListActivity : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            recreate()
+                            loadPlaylists(
+                                listView
+                            )
                         }
                     }
 
@@ -236,10 +245,5 @@ class PlaylistListActivity : AppCompatActivity() {
 
             true
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        recreate()
     }
 }

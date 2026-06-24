@@ -1,10 +1,8 @@
 package com.media.iptvplayer
 
-import android.app.PictureInPictureParams
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Rational
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -21,12 +19,21 @@ class PlayerActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_player)
 
-        playerView =
-            findViewById(R.id.playerView)
+        playerView = findViewById(R.id.playerView)
 
-        val url =
-            intent.getStringExtra("url")
-                ?: return
+        val url = intent.getStringExtra("url")
+
+        if (url.isNullOrEmpty()) {
+
+            Toast.makeText(
+                this,
+                "Video adresi bulunamadı",
+                Toast.LENGTH_LONG
+            ).show()
+
+            finish()
+            return
+        }
 
         player = ExoPlayer.Builder(this)
             .setSeekBackIncrementMs(10000)
@@ -35,37 +42,15 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
-        val mediaItem =
-            MediaItem.fromUri(
-                Uri.parse(url)
-            )
+        val mediaItem = MediaItem.fromUri(
+            Uri.parse(url)
+        )
 
         player.setMediaItem(mediaItem)
 
         player.prepare()
 
-        player.play()
-
-        playerView.setShowNextButton(false)
-        playerView.setShowPreviousButton(false)
-        playerView.setShowRewindButton(true)
-        playerView.setShowFastForwardButton(true)
-    }
-
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            val params =
-                PictureInPictureParams.Builder()
-                    .setAspectRatio(
-                        Rational(16, 9)
-                    )
-                    .build()
-
-            enterPictureInPictureMode(params)
-        }
+        player.playWhenReady = true
     }
 
     override fun onStart() {
@@ -79,9 +64,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        if (::player.isInitialized &&
-            !isInPictureInPictureMode) {
-
+        if (::player.isInitialized) {
             player.pause()
         }
     }

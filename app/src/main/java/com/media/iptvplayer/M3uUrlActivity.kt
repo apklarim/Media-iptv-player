@@ -2,6 +2,7 @@ package com.media.iptvplayer
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -15,7 +16,6 @@ import kotlinx.coroutines.withContext
 class M3uUrlActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_m3u_url)
@@ -60,19 +60,17 @@ class M3uUrlActivity : AppCompatActivity() {
 
                     val content =
                         withContext(Dispatchers.IO) {
-
                             NetworkUtils.downloadText(url)
                         }
 
-                    Toast.makeText(
-                        this@M3uUrlActivity,
-                        "İndirilen veri boyutu: ${content.length}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Log.d(
+                        "M3U_DEBUG",
+                        content.take(500)
+                    )
 
                     Toast.makeText(
                         this@M3uUrlActivity,
-                        "İndirilen veri: ${content.take(150)}",
+                        content.take(100),
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -116,6 +114,11 @@ class M3uUrlActivity : AppCompatActivity() {
                         "Hata: ${e.message}",
                         Toast.LENGTH_LONG
                     ).show()
+
+                    Log.e(
+                        "M3U_ERROR",
+                        e.toString()
+                    )
                 }
             }
         }

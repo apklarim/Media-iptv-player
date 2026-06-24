@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.media.iptvplayer.model.Playlist
@@ -16,88 +15,84 @@ import kotlinx.coroutines.withContext
 class M3uUrlActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_m3u_url)
 
-        val etName = findViewById<EditText>(R.id.etPlaylistName)
-        val etUrl = findViewById<EditText>(R.id.etPlaylistUrl)
-        val btnSave = findViewById<Button>(R.id.btnSaveM3u)
+        val etName =
+            findViewById<EditText>(R.id.etPlaylistName)
 
-        btnSave.setOnClickListener {
+        val etUrl =
+            findViewById<EditText>(R.id.etPlaylistUrl)
 
-            val name = etName.text.toString().trim()
-            val url = etUrl.text.toString().trim()
+        findViewById<Button>(R.id.btnSaveM3u)
+            .setOnClickListener {
 
-            if (name.isEmpty() || url.isEmpty()) {
-                Toast.makeText(
-                    this,
-                    "Lütfen tüm alanları doldurun",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
+                val name =
+                    etName.text.toString().trim()
 
-            lifecycleScope.launch {
+                val url =
+                    etUrl.text.toString().trim()
 
-                try {
+                if (name.isEmpty() || url.isEmpty()) {
 
                     Toast.makeText(
-                        this@M3uUrlActivity,
-                        "Liste yükleniyor...",
+                        this,
+                        "Tüm alanları doldurun",
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    val content = withContext(Dispatchers.IO) {
-                        NetworkUtils.downloadText(url)
-                    }
+                    return@setOnClickListener
+                }
 
-                    AlertDialog.Builder(this@M3uUrlActivity)
-                        .setTitle("Sunucudan Gelen Veri")
-                        .setMessage(content.take(500))
-                        .setPositiveButton("Tamam", null)
-                        .show()
+                lifecycleScope.launch {
 
-                    val channels = M3uParser.parse(content)
+                    try {
 
-                    ChannelRepository.channels = channels
+                        val content =
+                            withContext(Dispatchers.IO) {
 
-                    Toast.makeText(
-                        this@M3uUrlActivity,
-                        "Kanal sayısı: ${channels.size}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                                NetworkUtils.downloadText(url)
+                            }
 
-                    PlaylistManager.addPlaylist(
-                        this@M3uUrlActivity,
-                        Playlist(
-                            name = name,
-                            type = "M3U",
-                            url = url
-                        )
-                    )
+                        val channels =
+                            M3uParser.parse(content)
 
-                    startActivity(
-                        Intent(
+                        ChannelRepository.channels =
+                            channels
+
+                        PlaylistManager.addPlaylist(
                             this@M3uUrlActivity,
-                            ChannelListActivity::class.java
-                        ).putExtra(
-                            "playlistName",
-                            name
+                            Playlist(
+                                name = name,
+                                type = "M3U",
+                                url = url
+                            )
                         )
-                    )
 
-                    finish()
+                        Toast.makeText(
+                            this@M3uUrlActivity,
+                            "${channels.size} kanal yüklendi",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                } catch (e: Exception) {
+                        startActivity(
+                            Intent(
+                                this@M3uUrlActivity,
+                                ChannelListActivity::class.java
+                            )
+                        )
 
-                    AlertDialog.Builder(this@M3uUrlActivity)
-                        .setTitle("Hata")
-                        .setMessage(e.message)
-                        .setPositiveButton("Tamam", null)
-                        .show()
+                    } catch (e: Exception) {
+
+                        Toast.makeText(
+                            this@M3uUrlActivity,
+                            "Hata: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
-        }
     }
 }

@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         // CANLI TV
 
-        findViewById<Button>(R.id.btnLiveTv)
+        findViewById<Button>(R.id.cardLive)
             .setOnClickListener {
 
                 startActivity(
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         // FILMLER
 
-        findViewById<Button>(R.id.btnMovies)
+        findViewById<Button>(R.id.cardMovies)
             .setOnClickListener {
 
                 startActivity(
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         // DIZILER
 
-        findViewById<Button>(R.id.btnSeries)
+        findViewById<Button>(R.id.cardSeries)
             .setOnClickListener {
 
                 startActivity(
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         // KAYITLI LISTELER
 
-        findViewById<Button>(R.id.btnPlaylists)
+        findViewById<Button>(R.id.cardPlaylists)
             .setOnClickListener {
 
                 startActivity(
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         // AYARLAR
 
-        findViewById<Button>(R.id.btnSettings)
+        findViewById<Button>(R.id.cardSettings)
             .setOnClickListener {
 
                 startActivity(

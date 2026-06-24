@@ -9,6 +9,7 @@
         android:allowBackup="true"
         android:label="Media IPTV Player"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
         <activity

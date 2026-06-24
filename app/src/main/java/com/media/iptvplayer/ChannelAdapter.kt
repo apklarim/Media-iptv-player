@@ -36,15 +36,13 @@ class ChannelAdapter(
 
         val channel = channels[position]
 
-        val logo =
-            view.findViewById<ImageView>(
-                R.id.imgLogo
-            )
+        val logo = view.findViewById<ImageView>(
+            R.id.imgLogo
+        )
 
-        val name =
-            view.findViewById<TextView>(
-                R.id.txtChannelName
-            )
+        val name = view.findViewById<TextView>(
+            R.id.txtChannelName
+        )
 
         name.text =
             if (channel.isFavorite)
@@ -63,27 +61,7 @@ class ChannelAdapter(
             )
         }
 
-        // Kart animasyonu
-
-        view.setOnClickListener {
-
-            view.animate()
-                .scaleX(1.03f)
-                .scaleY(1.03f)
-                .setDuration(100)
-                .withEndAction {
-
-                    view.animate()
-                        .scaleX(1f)
-                        .scaleY(1f)
-                        .setDuration(100)
-                        .start()
-                }
-                .start()
-        }
-
-        // Liste animasyonu
-
+        // Sadece giriş animasyonu
         val animation =
             AnimationUtils.loadAnimation(
                 context,
@@ -91,11 +69,6 @@ class ChannelAdapter(
             )
 
         view.startAnimation(animation)
-
-        // TV Kumandası / Air Mouse desteği
-
-        view.isFocusable = true
-        view.isFocusableInTouchMode = true
 
         return view
     }

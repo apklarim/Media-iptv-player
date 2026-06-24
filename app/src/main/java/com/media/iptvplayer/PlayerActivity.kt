@@ -2,6 +2,10 @@ package com.media.iptvplayer
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -12,6 +16,9 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var player: ExoPlayer
     private lateinit var playerView: PlayerView
+    private lateinit var channelList: ListView
+
+    private var channels = ChannelRepository.channels
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -20,6 +27,7 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_player)
 
         playerView = findViewById(R.id.playerView)
+        channelList = findViewById(R.id.listChannels)
 
         val url = intent.getStringExtra("url")
 
@@ -35,41 +43,61 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
-        // Ekranı doldur
         playerView.resizeMode =
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
-        // Kontroller
-        playerView.setShowNextButton(false)
-        playerView.setShowPreviousButton(false)
-        playerView.setShowRewindButton(true)
-        playerView.setShowFastForwardButton(true)
-
-        val mediaItem = MediaItem.fromUri(
-            Uri.parse(url)
-        )
+        val mediaItem =
+            MediaItem.fromUri(Uri.parse(url))
 
         player.setMediaItem(mediaItem)
-
         player.prepare()
-
         player.playWhenReady = true
+
+        loadChannelList()
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun loadChannelList() {
 
-        if (::player.isInitialized) {
+        channelList.adapter =
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                channels.map { it.name }
+            )
+
+        channelList.setOnItemClickListener { _, _, position, _ ->
+
+            val mediaItem =
+                MediaItem.fromUri(
+                    Uri.parse(channels[position].url)
+                )
+
+            player.setMediaItem(mediaItem)
+            player.prepare()
             player.play()
+
+            channelList.visibility = View.GONE
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onKeyDown(
+        keyCode: Int,
+        event: KeyEvent?
+    ): Boolean {
 
-        if (::player.isInitialized) {
-            player.pause()
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
+            keyCode == KeyEvent.KEYCODE_ENTER) {
+
+            channelList.visibility =
+                if (channelList.visibility == View.VISIBLE)
+                    View.GONE
+                else
+                    View.VISIBLE
+
+            return true
         }
+
+        return super.onKeyDown(keyCode, event)
     }
 
     override fun onDestroy() {

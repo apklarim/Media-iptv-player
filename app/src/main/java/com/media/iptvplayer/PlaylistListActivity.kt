@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 class PlaylistListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_playlist_list)
@@ -40,7 +41,6 @@ class PlaylistListActivity : AppCompatActivity() {
 
         val names =
             playlists.map {
-
                 "${it.name} (${it.type})"
             }
 
@@ -59,7 +59,7 @@ class PlaylistListActivity : AppCompatActivity() {
                 startActivity(
                     Intent(
                         this,
-                        ChannelListActivity::class.java
+                        MainActivity::class.java
                     )
                 )
 
@@ -84,22 +84,13 @@ class PlaylistListActivity : AppCompatActivity() {
                             )
                         }
 
-                    val channels =
-                        M3uParser.parse(content)
-
                     ChannelRepository.channels =
-                        channels
-
-                    Toast.makeText(
-                        this@PlaylistListActivity,
-                        "${channels.size} kanal yüklendi",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        M3uParser.parse(content)
 
                     startActivity(
                         Intent(
                             this@PlaylistListActivity,
-                            ChannelListActivity::class.java
+                            MainActivity::class.java
                         )
                     )
 

@@ -8,54 +8,57 @@ object M3uParser {
 
         val channels = mutableListOf<Channel>()
 
-        val lines = content.split("\n")
+        val normalizedContent =
+            content.replace("\r\n", "\n")
+                .replace("\r", "\n")
+
+        val lines = normalizedContent.lines()
 
         var currentName = ""
         var currentGroup = ""
         var currentLogo = ""
 
-        for (rawLine in lines) {
+        for (i in lines.indices) {
 
-            val line = rawLine.trim()
+            val line = lines[i].trim()
 
             if (line.startsWith("#EXTINF")) {
 
                 currentName =
-                    line.substringAfterLast(",")
+                    line.substringAfterLast(",").trim()
 
                 currentGroup =
                     Regex("""group-title="([^"]*)"""")
                         .find(line)
-                        ?.groupValues
-                        ?.get(1)
+                        ?.groupValues?.get(1)
                         ?: ""
 
                 currentLogo =
                     Regex("""tvg-logo="([^"]*)"""")
                         .find(line)
-                        ?.groupValues
-                        ?.get(1)
+                        ?.groupValues?.get(1)
                         ?: ""
-            }
 
-            else if (
-                line.startsWith("http://")
-                || line.startsWith("https://")
-            ) {
+                if (i + 1 < lines.size) {
 
-                channels.add(
-                    Channel(
-                        name =
-                        if (currentName.isBlank())
-                            "İsimsiz Kanal"
-                        else
-                            currentName,
+                    val nextLine =
+                        lines[i + 1].trim()
 
-                        url = line,
-                        logo = currentLogo,
-                        group = currentGroup
-                    )
-                )
+                    if (nextLine.startsWith("http")) {
+
+                        channels.add(
+                            Channel(
+                                name = if (currentName.isBlank())
+                                    "İsimsiz Kanal"
+                                else currentName,
+
+                                url = nextLine,
+                                logo = currentLogo,
+                                group = currentGroup
+                            )
+                        )
+                    }
+                }
             }
         }
 

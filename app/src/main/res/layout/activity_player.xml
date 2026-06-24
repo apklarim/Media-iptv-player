@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.media3.ui.PlayerView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/playerView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:keepScreenOn="true"
-    app:resize_mode="zoom"/>
+    android:layout_height="match_parent">
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        app:resize_mode="zoom"/>
+
+    <ListView
+        android:id="@+id/listChannels"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="#CC000000"
+        android:visibility="gone"/>
+
+</FrameLayout>

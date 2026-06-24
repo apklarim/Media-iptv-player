@@ -8,57 +8,51 @@ object M3uParser {
 
         val channels = mutableListOf<Channel>()
 
-        val normalizedContent =
-            content.replace("\r\n", "\n")
-                .replace("\r", "\n")
-
-        val lines = normalizedContent.lines()
+        val lines = content
+            .replace("\r\n", "\n")
+            .replace("\r", "\n")
+            .split("\n")
 
         var currentName = ""
         var currentGroup = ""
-        var currentLogo = ""
 
-        for (i in lines.indices) {
+        for (lineRaw in lines) {
 
-            val line = lines[i].trim()
+            val line = lineRaw.trim()
 
             if (line.startsWith("#EXTINF")) {
 
-                currentName =
-                    line.substringAfterLast(",").trim()
+                currentName = line.substringAfterLast(",")
 
                 currentGroup =
                     Regex("""group-title="([^"]*)"""")
                         .find(line)
-                        ?.groupValues?.get(1)
+                        ?.groupValues
+                        ?.get(1)
                         ?: ""
+            }
 
-                currentLogo =
-                    Regex("""tvg-logo="([^"]*)"""")
-                        .find(line)
-                        ?.groupValues?.get(1)
-                        ?: ""
+            else if (
+                line.startsWith("http://") ||
+                line.startsWith("https://")
+            ) {
 
-                if (i + 1 < lines.size) {
+                channels.add(
+                    Channel(
+                        name = currentName.ifBlank {
+                            "İsimsiz Kanal"
+                        },
 
-                    val nextLine =
-                        lines[i + 1].trim()
+                        url = line,
 
-                    if (nextLine.startsWith("http")) {
+                        group = currentGroup,
 
-                        channels.add(
-                            Channel(
-                                name = if (currentName.isBlank())
-                                    "İsimsiz Kanal"
-                                else currentName,
+                        logo = ""
+                    )
+                )
 
-                                url = nextLine,
-                                logo = currentLogo,
-                                group = currentGroup
-                            )
-                        )
-                    }
-                }
+                currentName = ""
+                currentGroup = ""
             }
         }
 

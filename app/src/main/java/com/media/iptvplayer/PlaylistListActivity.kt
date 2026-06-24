@@ -5,10 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.media.iptvplayer.model.Playlist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,6 +44,7 @@ class PlaylistListActivity : AppCompatActivity() {
 
         val names =
             playlists.map {
+
                 "${it.name} (${it.type})"
             }
 
@@ -50,6 +53,8 @@ class PlaylistListActivity : AppCompatActivity() {
             android.R.layout.simple_list_item_1,
             names
         )
+
+        // Kısa tıklama
 
         listView.setOnItemClickListener { _, _, position, _ ->
 
@@ -124,14 +129,88 @@ class PlaylistListActivity : AppCompatActivity() {
 
                     when (which) {
 
+                        // Düzenle
+
                         0 -> {
 
-                            Toast.makeText(
-                                this,
-                                "Düzenleme yakında eklenecek",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val editText =
+                                EditText(this)
+
+                            editText.setText(
+                                playlist.name
+                            )
+
+                            AlertDialog.Builder(this)
+                                .setTitle(
+                                    "Liste Adını Düzenle"
+                                )
+
+                                .setView(editText)
+
+                                .setPositiveButton(
+                                    "Kaydet"
+                                ) { _, _ ->
+
+                                    val newName =
+                                        editText.text
+                                            .toString()
+                                            .trim()
+
+                                    if (newName.isNotEmpty()) {
+
+                                        val allLists =
+                                            PlaylistManager
+                                                .getPlaylists(
+                                                    this
+                                                )
+
+                                        val index =
+                                            allLists
+                                                .indexOfFirst {
+
+                                                    it.id ==
+                                                            playlist.id
+                                                }
+
+                                        if (index != -1) {
+
+                                            allLists[index] =
+                                                Playlist(
+                                                    id = playlist.id,
+                                                    name = newName,
+                                                    type = playlist.type,
+                                                    url = playlist.url,
+                                                    username = playlist.username,
+                                                    password = playlist.password,
+                                                    server = playlist.server
+                                                )
+
+                                            PlaylistManager
+                                                .savePlaylists(
+                                                    this,
+                                                    allLists
+                                                )
+
+                                            Toast.makeText(
+                                                this,
+                                                "Liste güncellendi",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                            recreate()
+                                        }
+                                    }
+                                }
+
+                                .setNegativeButton(
+                                    "İptal",
+                                    null
+                                )
+
+                                .show()
                         }
+
+                        // Sil
 
                         1 -> {
 
@@ -140,15 +219,27 @@ class PlaylistListActivity : AppCompatActivity() {
                                 playlist.id
                             )
 
+                            Toast.makeText(
+                                this,
+                                "Liste silindi",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
                             recreate()
                         }
                     }
 
                     dialog.dismiss()
                 }
+
                 .show()
 
             true
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        recreate()
     }
 }

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -74,7 +73,8 @@ class ChannelListActivity : AppCompatActivity() {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(
                     s: CharSequence?,
@@ -82,18 +82,17 @@ class ChannelListActivity : AppCompatActivity() {
                     before: Int,
                     count: Int
                 ) {
-
                     applyFilter()
                 }
 
                 override fun afterTextChanged(
                     s: Editable?
-                ) {}
+                ) {
+                }
             }
         )
 
         listGroups.setOnItemClickListener {
-
                 _, _, position, _ ->
 
             selectedGroup =
@@ -105,7 +104,6 @@ class ChannelListActivity : AppCompatActivity() {
         }
 
         listChannels.setOnItemClickListener {
-
                 _, _, position, _ ->
 
             startActivity(
@@ -121,7 +119,6 @@ class ChannelListActivity : AppCompatActivity() {
         }
 
         listChannels.setOnItemLongClickListener {
-
                 _, _, position, _ ->
 
             FavoriteManager.toggleFavorite(
@@ -136,7 +133,8 @@ class ChannelListActivity : AppCompatActivity() {
 
             allChannels.forEach {
 
-                if (it.name ==
+                if (
+                    it.name ==
                     filteredChannels[position].name
                 ) {
 
@@ -172,7 +170,7 @@ class ChannelListActivity : AppCompatActivity() {
         )
 
         listGroups.adapter =
-            ArrayAdapter(
+            android.widget.ArrayAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
                 groups
@@ -195,8 +193,14 @@ class ChannelListActivity : AppCompatActivity() {
                             it.group ==
                             selectedGroup ||
 
-                            (selectedGroup == "Favoriler"
-                                    && it.isFavorite)
+                            (
+                                    selectedGroup ==
+                                            "Favoriler"
+
+                                            &&
+
+                                            it.isFavorite
+                                    )
 
                 val searchOk =
 
@@ -205,34 +209,25 @@ class ChannelListActivity : AppCompatActivity() {
 
                 groupOk && searchOk
 
-            }.sortedByDescending {
+            }
 
-                it.isFavorite
+                .sortedByDescending {
 
-            }.toMutableList()
+                    it.isFavorite
+
+                }
+
+                .toMutableList()
 
         loadChannels()
     }
 
     private fun loadChannels() {
 
-        val names =
-            filteredChannels.map {
-
-                if (it.isFavorite)
-
-                    "⭐ ${it.name}"
-
-                else
-
-                    it.name
-            }
-
         listChannels.adapter =
-            ArrayAdapter(
+            ChannelAdapter(
                 this,
-                android.R.layout.simple_list_item_1,
-                names
+                filteredChannels
             )
     }
 }

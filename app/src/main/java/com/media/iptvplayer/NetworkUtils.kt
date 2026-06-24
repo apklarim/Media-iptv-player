@@ -5,48 +5,38 @@ import java.net.URL
 
 object NetworkUtils {
 
-    fun downloadText(url: String): String {
+    fun downloadText(urlString: String): String {
+
+        val url = URL(urlString)
 
         val connection =
-            URL(url).openConnection() as HttpURLConnection
-
-        // Büyük IPTV listeleri için süreyi artırıyoruz
-
-        connection.connectTimeout = 60000
-        connection.readTimeout = 60000
+            url.openConnection() as HttpURLConnection
 
         connection.requestMethod = "GET"
 
+        connection.connectTimeout = 15000
+        connection.readTimeout = 15000
+
         connection.setRequestProperty(
             "User-Agent",
-            "Mozilla/5.0"
+            "VLC/3.0.18 LibVLC/3.0.18"
         )
 
-        connection.setRequestProperty(
-            "Accept",
-            "*/*"
-        )
-
-        connection.setRequestProperty(
-            "Connection",
-            "keep-alive"
-        )
-
-        connection.doInput = true
+        connection.instanceFollowRedirects = true
 
         connection.connect()
 
-        val responseCode = connection.responseCode
+        val code = connection.responseCode
 
-        if (responseCode != HttpURLConnection.HTTP_OK) {
+        if (code != HttpURLConnection.HTTP_OK) {
 
             throw Exception(
-                "Sunucu hatası: $responseCode"
+                "Sunucu cevap kodu: $code"
             )
         }
 
         return connection.inputStream
             .bufferedReader()
-            .use { it.readText() }
+            .readText()
     }
 }

@@ -10,5 +10,7 @@ data class Channel(
 
     val group: String = "",
 
-    val category: String = "LIVE"
+    val category: String = "LIVE",
+
+    var isFavorite: Boolean = false
 )

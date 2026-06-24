@@ -3,32 +3,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#06131A">
+
+    <!-- Arama -->
 
     <EditText
         android:id="@+id/etSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="#10212A"
         android:hint="Kanal Ara..."
-        android:padding="12dp" />
+        android:padding="12dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#AAAAAA"/>
 
-    <LinearLayout
+    <!-- Gruplar -->
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/groupContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"/>
+
+    </HorizontalScrollView>
+
+    <!-- Kanallar -->
+
+    <ListView
+        android:id="@+id/listChannels"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <ListView
-            android:id="@+id/listGroups"
-            android:layout_width="120dp"
-            android:layout_height="match_parent" />
-
-        <ListView
-            android:id="@+id/listChannels"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-    </LinearLayout>
+        android:divider="#202020"
+        android:dividerHeight="1dp"/>
 
 </LinearLayout>

@@ -11,29 +11,25 @@ import com.media.iptvplayer.model.Channel
 class ChannelListActivity : AppCompatActivity() {
 
     private lateinit var listView: ListView
-    private var channels = mutableListOf<Channel>()
+
+    private var channels =
+        mutableListOf<Channel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_channel_list)
+        setContentView(
+            R.layout.activity_channel_list
+        )
 
         listView =
             findViewById(R.id.listChannels)
 
         val category =
-            intent.getStringExtra("CATEGORY")
-                ?: "LIVE"
-
-        title = when (category) {
-
-            "MOVIES" -> "Filmler"
-
-            "SERIES" -> "Diziler"
-
-            else -> "Canlı TV"
-        }
+            intent.getStringExtra(
+                "CATEGORY"
+            ) ?: "LIVE"
 
         channels =
             ChannelRepository.channels
@@ -41,46 +37,84 @@ class ChannelListActivity : AppCompatActivity() {
 
                     it.category == category
 
-                }.toMutableList()
+                }
+                .toMutableList()
 
-        if (channels.isEmpty()) {
+        channels.forEach {
 
-            Toast.makeText(
-                this,
-                "İçerik bulunamadı",
-                Toast.LENGTH_LONG
-            ).show()
+            it.isFavorite =
+                FavoriteManager.isFavorite(
+                    this,
+                    it.name
+                )
         }
 
+        channels.sortByDescending {
+            it.isFavorite
+        }
+
+        loadList()
+
+        listView.setOnItemClickListener {
+
+                _, _, position, _ ->
+
+            startActivity(
+
+                Intent(
+                    this,
+                    PlayerActivity::class.java
+                )
+
+                    .putExtra(
+                        "url",
+                        channels[position].url
+                    )
+            )
+        }
+
+        listView.setOnItemLongClickListener {
+
+                _, _, position, _ ->
+
+            FavoriteManager.toggleFavorite(
+                this,
+                channels[position].name
+            )
+
+            channels[position].isFavorite =
+                !channels[position].isFavorite
+
+            channels.sortByDescending {
+                it.isFavorite
+            }
+
+            loadList()
+
+            true
+        }
+    }
+
+    private fun loadList() {
+
         val names =
-            channels.map { it.name }
+            channels.map {
+
+                if (it.isFavorite)
+
+                    "⭐ ${it.name}"
+
+                else
+
+                    it.name
+            }
 
         listView.adapter =
             ArrayAdapter(
                 this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout
+                    .simple_list_item_1,
                 names
             )
-
-        listView.setOnItemClickListener { _, _, position, _ ->
-
-            startActivity(
-                Intent(
-                    this,
-                    PlayerActivity::class.java
-                ).apply {
-
-                    putExtra(
-                        "url",
-                        channels[position].url
-                    )
-
-                    putExtra(
-                        "name",
-                        channels[position].name
-                    )
-                }
-            )
-        }
     }
 }

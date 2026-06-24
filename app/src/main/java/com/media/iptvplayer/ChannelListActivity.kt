@@ -1,5 +1,6 @@
 package com.media.iptvplayer
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -24,7 +25,6 @@ class ChannelListActivity : AppCompatActivity() {
             Toast.LENGTH_LONG
         ).show()
 
-        // Kanal yoksa test kanallarını göster
         if (channels.isEmpty()) {
 
             val demo = mutableListOf<String>()
@@ -39,16 +39,9 @@ class ChannelListActivity : AppCompatActivity() {
                 demo
             )
 
-            Toast.makeText(
-                this,
-                "Gerçek kanal bulunamadı, test kanalları gösteriliyor",
-                Toast.LENGTH_LONG
-            ).show()
-
             return
         }
 
-        // Gerçek kanalları göster
         val names = channels.map { it.name }
 
         listView.adapter = ArrayAdapter(
@@ -61,13 +54,18 @@ class ChannelListActivity : AppCompatActivity() {
 
             val selectedChannel = channels[position]
 
-            Toast.makeText(
-                this,
-                "Seçilen kanal: ${selectedChannel.name}",
-                Toast.LENGTH_SHORT
-            ).show()
+            startActivity(
+                Intent(
+                    this,
+                    PlayerActivity::class.java
+                ).apply {
 
-            // Daha sonra burada PlayerActivity açılacak
+                    putExtra(
+                        "url",
+                        selectedChannel.url
+                    )
+                }
+            )
         }
     }
 }

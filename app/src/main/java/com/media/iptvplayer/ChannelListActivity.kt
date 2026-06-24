@@ -2,7 +2,10 @@ package com.media.iptvplayer
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
@@ -66,7 +69,6 @@ class ChannelListActivity : AppCompatActivity() {
         }
 
         loadGroups()
-
         applyFilter()
 
         searchBox.addTextChangedListener(
@@ -119,21 +121,17 @@ class ChannelListActivity : AppCompatActivity() {
                 filteredChannels[position].name
             )
 
-            filteredChannels[position]
-                .isFavorite =
-                !filteredChannels[position]
-                    .isFavorite
+            filteredChannels[position].isFavorite =
+                !filteredChannels[position].isFavorite
 
             allChannels.forEach {
 
-                if (
-                    it.name ==
+                if (it.name ==
                     filteredChannels[position].name
                 ) {
 
                     it.isFavorite =
-                        filteredChannels[position]
-                            .isFavorite
+                        filteredChannels[position].isFavorite
                 }
             }
 
@@ -178,15 +176,20 @@ class ChannelListActivity : AppCompatActivity() {
 
             tv.textSize = 12f
 
-            tv.setTextColor(
-                Color.WHITE
-            )
+            tv.setTextColor(Color.WHITE)
 
-            tv.setBackgroundColor(
-                Color.parseColor(
-                    "#18C7D1"
+            if (group == selectedGroup) {
+
+                tv.setBackgroundColor(
+                    Color.parseColor("#FF9800")
                 )
-            )
+
+            } else {
+
+                tv.setBackgroundColor(
+                    Color.parseColor("#18C7D1")
+                )
+            }
 
             val params =
                 LinearLayout.LayoutParams(
@@ -205,7 +208,44 @@ class ChannelListActivity : AppCompatActivity() {
 
             tv.setOnClickListener {
 
+                tv.animate()
+                    .scaleX(1.15f)
+                    .scaleY(1.15f)
+                    .setDuration(100)
+                    .withEndAction {
+
+                        tv.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(100)
+                            .start()
+                    }
+                    .start()
+
+                val vibrator =
+                    getSystemService(
+                        VIBRATOR_SERVICE
+                    ) as Vibrator
+
+                if (Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.O) {
+
+                    vibrator.vibrate(
+                        VibrationEffect.createOneShot(
+                            30,
+                            VibrationEffect.DEFAULT_AMPLITUDE
+                        )
+                    )
+
+                } else {
+
+                    @Suppress("DEPRECATION")
+                    vibrator.vibrate(30)
+                }
+
                 selectedGroup = group
+
+                loadGroups()
 
                 applyFilter()
             }
@@ -233,9 +273,7 @@ class ChannelListActivity : AppCompatActivity() {
                             (
                                     selectedGroup ==
                                             "Favoriler"
-
                                             &&
-
                                             it.isFavorite
                                     )
 

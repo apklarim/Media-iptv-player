@@ -52,7 +52,6 @@ class M3uUrlActivity : AppCompatActivity() {
 
                         val content =
                             withContext(Dispatchers.IO) {
-
                                 NetworkUtils.downloadText(url)
                             }
 
@@ -80,9 +79,11 @@ class M3uUrlActivity : AppCompatActivity() {
                         startActivity(
                             Intent(
                                 this@M3uUrlActivity,
-                                ChannelListActivity::class.java
+                                MainActivity::class.java
                             )
                         )
+
+                        finish()
 
                     } catch (e: Exception) {
 

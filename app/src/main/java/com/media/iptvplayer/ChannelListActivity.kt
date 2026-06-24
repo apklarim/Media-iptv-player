@@ -12,14 +12,17 @@ import com.media.iptvplayer.model.Channel
 
 class ChannelListActivity : AppCompatActivity() {
 
-    private lateinit var listView: ListView
+    private lateinit var listChannels: ListView
+    private lateinit var listGroups: ListView
     private lateinit var searchBox: EditText
 
-    private var channels =
+    private var allChannels =
         mutableListOf<Channel>()
 
     private var filteredChannels =
         mutableListOf<Channel>()
+
+    private var selectedGroup = "Tümü"
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -29,8 +32,11 @@ class ChannelListActivity : AppCompatActivity() {
             R.layout.activity_channel_list
         )
 
-        listView =
+        listChannels =
             findViewById(R.id.listChannels)
+
+        listGroups =
+            findViewById(R.id.listGroups)
 
         searchBox =
             findViewById(R.id.etSearch)
@@ -40,14 +46,14 @@ class ChannelListActivity : AppCompatActivity() {
                 "CATEGORY"
             ) ?: "LIVE"
 
-        channels =
+        allChannels =
             ChannelRepository.channels
                 .filter {
                     it.category == category
                 }
                 .toMutableList()
 
-        channels.forEach {
+        allChannels.forEach {
 
             it.isFavorite =
                 FavoriteManager.isFavorite(
@@ -56,14 +62,9 @@ class ChannelListActivity : AppCompatActivity() {
                 )
         }
 
-        channels.sortByDescending {
-            it.isFavorite
-        }
+        loadGroups()
 
-        filteredChannels =
-            channels.toMutableList()
-
-        loadList()
+        applyFilter()
 
         searchBox.addTextChangedListener(
             object : TextWatcher {
@@ -82,18 +83,7 @@ class ChannelListActivity : AppCompatActivity() {
                     count: Int
                 ) {
 
-                    val query =
-                        s.toString().lowercase()
-
-                    filteredChannels =
-                        channels.filter {
-
-                            it.name.lowercase()
-                                .contains(query)
-
-                        }.toMutableList()
-
-                    loadList()
+                    applyFilter()
                 }
 
                 override fun afterTextChanged(
@@ -102,7 +92,19 @@ class ChannelListActivity : AppCompatActivity() {
             }
         )
 
-        listView.setOnItemClickListener {
+        listGroups.setOnItemClickListener {
+
+                _, _, position, _ ->
+
+            selectedGroup =
+                listGroups.adapter
+                    .getItem(position)
+                    .toString()
+
+            applyFilter()
+        }
+
+        listChannels.setOnItemClickListener {
 
                 _, _, position, _ ->
 
@@ -118,7 +120,7 @@ class ChannelListActivity : AppCompatActivity() {
             )
         }
 
-        listView.setOnItemLongClickListener {
+        listChannels.setOnItemLongClickListener {
 
                 _, _, position, _ ->
 
@@ -132,7 +134,7 @@ class ChannelListActivity : AppCompatActivity() {
                 !filteredChannels[position]
                     .isFavorite
 
-            channels.forEach {
+            allChannels.forEach {
 
                 if (it.name ==
                     filteredChannels[position].name
@@ -144,20 +146,75 @@ class ChannelListActivity : AppCompatActivity() {
                 }
             }
 
-            channels.sortByDescending {
-                it.isFavorite
-            }
-
-            filteredChannels =
-                channels.toMutableList()
-
-            loadList()
+            applyFilter()
 
             true
         }
     }
 
-    private fun loadList() {
+    private fun loadGroups() {
+
+        val groups =
+            mutableListOf("Tümü")
+
+        groups.addAll(
+
+            allChannels.map {
+
+                it.group.ifBlank {
+                    "Diğer"
+                }
+
+            }
+
+                .distinct()
+                .sorted()
+        )
+
+        listGroups.adapter =
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                groups
+            )
+    }
+
+    private fun applyFilter() {
+
+        val search =
+            searchBox.text.toString()
+                .lowercase()
+
+        filteredChannels =
+            allChannels.filter {
+
+                val groupOk =
+
+                    selectedGroup == "Tümü" ||
+
+                            it.group ==
+                            selectedGroup ||
+
+                            (selectedGroup == "Favoriler"
+                                    && it.isFavorite)
+
+                val searchOk =
+
+                    it.name.lowercase()
+                        .contains(search)
+
+                groupOk && searchOk
+
+            }.sortedByDescending {
+
+                it.isFavorite
+
+            }.toMutableList()
+
+        loadChannels()
+    }
+
+    private fun loadChannels() {
 
         val names =
             filteredChannels.map {
@@ -171,11 +228,10 @@ class ChannelListActivity : AppCompatActivity() {
                     it.name
             }
 
-        listView.adapter =
+        listChannels.adapter =
             ArrayAdapter(
                 this,
-                android.R.layout
-                    .simple_list_item_1,
+                android.R.layout.simple_list_item_1,
                 names
             )
     }

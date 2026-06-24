@@ -17,61 +17,72 @@ class AddPlaylistActivity : AppCompatActivity() {
 
     private val filePicker =
         registerForActivityResult(
-            ActivityResultContracts.OpenDocument()
-        ) { uri: Uri? ->
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
 
-            if (uri != null) {
+            if (result.resultCode == RESULT_OK) {
 
-                try {
+                val uri: Uri? = result.data?.data
 
-                    contentResolver.takePersistableUriPermission(
-                        uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    )
+                if (uri != null) {
 
-                    val inputStream =
-                        contentResolver.openInputStream(uri)
+                    try {
 
-                    val content =
-                        inputStream?.bufferedReader()
-                            ?.use { it.readText() } ?: ""
+                        val flags =
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION
 
-                    val channels =
-                        M3uParser.parse(content)
+                        try {
+                            contentResolver.takePersistableUriPermission(
+                                uri,
+                                flags
+                            )
+                        } catch (_: Exception) {
+                        }
 
-                    ChannelRepository.channels = channels
+                        val inputStream =
+                            contentResolver.openInputStream(uri)
 
-                    PlaylistManager.addPlaylist(
-                        this,
-                        Playlist(
-                            name = playlistName,
-                            type = "M3U_FILE",
-                            url = uri.toString()
-                        )
-                    )
+                        val content =
+                            inputStream?.bufferedReader()
+                                ?.use { it.readText() } ?: ""
 
-                    Toast.makeText(
-                        this,
-                        "Toplam ${channels.size} kanal bulundu",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        val channels =
+                            M3uParser.parse(content)
 
-                    startActivity(
-                        Intent(
+                        ChannelRepository.channels = channels
+
+                        PlaylistManager.addPlaylist(
                             this,
-                            MainActivity::class.java
+                            Playlist(
+                                name = playlistName,
+                                type = "M3U_FILE",
+                                url = uri.toString()
+                            )
                         )
-                    )
 
-                    finish()
+                        Toast.makeText(
+                            this,
+                            "Toplam ${channels.size} kanal bulundu",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                } catch (e: Exception) {
+                        startActivity(
+                            Intent(
+                                this,
+                                MainActivity::class.java
+                            )
+                        )
 
-                    Toast.makeText(
-                        this,
-                        "Dosya okunamadı: ${e.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        finish()
+
+                    } catch (e: Exception) {
+
+                        Toast.makeText(
+                            this,
+                            "Dosya okunamadı: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
         }
@@ -97,7 +108,6 @@ class AddPlaylistActivity : AppCompatActivity() {
             .setOnClickListener {
 
                 val editText = EditText(this)
-
                 editText.hint = "Liste adı"
 
                 AlertDialog.Builder(this)
@@ -112,21 +122,16 @@ class AddPlaylistActivity : AppCompatActivity() {
                                     "M3U Dosyası"
                                 }
 
-                        filePicker.launch(
-                            arrayOf(
-                                "audio/x-mpegurl",
-                                "application/octet-stream",
-                                "text/plain",
-                                "*/*"
-                            )
-                        )
+                        val intent =
+                            Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                                addCategory(Intent.CATEGORY_OPENABLE)
+                                type = "*/*"
+                            }
+
+                        filePicker.launch(intent)
                     }
 
-                    .setNegativeButton(
-                        "İptal",
-                        null
-                    )
-
+                    .setNegativeButton("İptal", null)
                     .show()
             }
 

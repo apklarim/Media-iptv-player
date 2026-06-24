@@ -17,12 +17,17 @@ class AddPlaylistActivity : AppCompatActivity() {
 
     private val filePicker =
         registerForActivityResult(
-            ActivityResultContracts.GetContent()
+            ActivityResultContracts.OpenDocument()
         ) { uri: Uri? ->
 
             if (uri != null) {
 
                 try {
+
+                    contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
 
                     val inputStream =
                         contentResolver.openInputStream(uri)
@@ -64,7 +69,7 @@ class AddPlaylistActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this,
-                        "Hata: ${e.message}",
+                        "Dosya okunamadı: ${e.message}",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -107,13 +112,21 @@ class AddPlaylistActivity : AppCompatActivity() {
                                     "M3U Dosyası"
                                 }
 
-                        filePicker.launch("*/*")
+                        filePicker.launch(
+                            arrayOf(
+                                "audio/x-mpegurl",
+                                "application/octet-stream",
+                                "text/plain",
+                                "*/*"
+                            )
+                        )
                     }
 
                     .setNegativeButton(
                         "İptal",
                         null
                     )
+
                     .show()
             }
 

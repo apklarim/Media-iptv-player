@@ -4,32 +4,33 @@ import com.media.iptvplayer.model.Channel
 
 object M3uParser {
 
-    fun parse(content: String): List<Channel> {
+    fun parse(content: String): MutableList<Channel> {
 
         val channels = mutableListOf<Channel>()
 
-        val lines = content
-            .replace("\r\n", "\n")
-            .replace("\r", "\n")
-            .split("\n")
+        val lines = content.lines()
 
         var currentName = ""
         var currentGroup = ""
+        var currentLogo = ""
 
-        for (lineRaw in lines) {
-
-            val line = lineRaw.trim()
+        for (line in lines) {
 
             if (line.startsWith("#EXTINF")) {
 
                 currentName =
-                    line.substringAfterLast(",").trim()
+                    line.substringAfterLast(",")
 
                 currentGroup =
                     Regex("""group-title="([^"]*)"""")
                         .find(line)
-                        ?.groupValues
-                        ?.get(1)
+                        ?.groupValues?.get(1)
+                        ?: ""
+
+                currentLogo =
+                    Regex("""tvg-logo="([^"]*)"""")
+                        .find(line)
+                        ?.groupValues?.get(1)
                         ?: ""
             }
 
@@ -43,23 +44,45 @@ object M3uParser {
 
                 val category = when {
 
-                    group.contains("movie") -> "MOVIES"
-                    group.contains("film") -> "MOVIES"
-                    group.contains("vod") -> "MOVIES"
-                    group.contains("cinema") -> "MOVIES"
-                    group.contains("netflix") -> "MOVIES"
+                    // FILMLER
 
-                    group.contains("series") -> "SERIES"
-                    group.contains("dizi") -> "SERIES"
-                    group.contains("show") -> "SERIES"
+                    group.contains("movie") ||
+                    group.contains("movies") ||
+                    group.contains("film") ||
+                    group.contains("films") ||
+                    group.contains("vod") ||
+                    group.contains("cinema") ||
+                    group.contains("sinema") ||
+                    group.contains("netflix") ||
+                    group.contains("amazon") ||
+                    group.contains("disney") ||
+                    group.contains("blu tv") ||
+                    group.contains("gain") ->
 
-                    else -> "LIVE"
+                        "MOVIES"
+
+                    // DIZILER
+
+                    group.contains("series") ||
+                    group.contains("serial") ||
+                    group.contains("dizi") ||
+                    group.contains("shows") ||
+                    group.contains("show") ->
+
+                        "SERIES"
+
+                    // CANLI TV
+
+                    else ->
+                        "LIVE"
                 }
 
                 channels.add(
+
                     Channel(
                         name = currentName,
                         url = line,
+                        logo = currentLogo,
                         group = currentGroup,
                         category = category
                     )

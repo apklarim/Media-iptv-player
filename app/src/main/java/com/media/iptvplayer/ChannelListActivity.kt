@@ -1,19 +1,23 @@
 package com.media.iptvplayer
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.media.iptvplayer.model.Channel
 
 class ChannelListActivity : AppCompatActivity() {
 
     private lateinit var listChannels: ListView
-    private lateinit var listGroups: ListView
     private lateinit var searchBox: EditText
+    private lateinit var groupContainer: LinearLayout
 
     private var allChannels =
         mutableListOf<Channel>()
@@ -34,11 +38,11 @@ class ChannelListActivity : AppCompatActivity() {
         listChannels =
             findViewById(R.id.listChannels)
 
-        listGroups =
-            findViewById(R.id.listGroups)
-
         searchBox =
             findViewById(R.id.etSearch)
+
+        groupContainer =
+            findViewById(R.id.groupContainer)
 
         val category =
             intent.getStringExtra(
@@ -92,17 +96,6 @@ class ChannelListActivity : AppCompatActivity() {
             }
         )
 
-        listGroups.setOnItemClickListener {
-                _, _, position, _ ->
-
-            selectedGroup =
-                listGroups.adapter
-                    .getItem(position)
-                    .toString()
-
-            applyFilter()
-        }
-
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
@@ -152,29 +145,73 @@ class ChannelListActivity : AppCompatActivity() {
 
     private fun loadGroups() {
 
+        groupContainer.removeAllViews()
+
         val groups =
-            mutableListOf("Tümü")
+            mutableListOf(
+                "Tümü",
+                "Favoriler"
+            )
 
         groups.addAll(
-
             allChannels.map {
 
                 it.group.ifBlank {
                     "Diğer"
                 }
 
-            }
-
-                .distinct()
-                .sorted()
+            }.distinct().sorted()
         )
 
-        listGroups.adapter =
-            android.widget.ArrayAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                groups
+        groups.distinct().forEach { group ->
+
+            val tv = TextView(this)
+
+            tv.text = group
+
+            tv.setPadding(
+                30,
+                15,
+                30,
+                15
             )
+
+            tv.textSize = 12f
+
+            tv.setTextColor(
+                Color.WHITE
+            )
+
+            tv.setBackgroundColor(
+                Color.parseColor(
+                    "#18C7D1"
+                )
+            )
+
+            val params =
+                LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+
+            params.setMargins(
+                8,
+                8,
+                8,
+                8
+            )
+
+            tv.layoutParams = params
+
+            tv.setOnClickListener {
+
+                selectedGroup = group
+
+                applyFilter()
+            }
+
+            groupContainer.addView(tv)
+        }
     }
 
     private fun applyFilter() {

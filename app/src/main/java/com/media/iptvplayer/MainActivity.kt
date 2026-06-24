@@ -2,10 +2,18 @@ package com.media.iptvplayer
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var btnLiveTv: Button
+    private lateinit var btnMovies: Button
+    private lateinit var btnSeries: Button
+    private lateinit var btnSettings: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -13,78 +21,83 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // CANLI TV
+        btnLiveTv = findViewById(R.id.btnLiveTv)
+        btnMovies = findViewById(R.id.btnMovies)
+        btnSeries = findViewById(R.id.btnSeries)
+        btnSettings = findViewById(R.id.btnSettings)
 
-        findViewById<Button>(R.id.cardLive)
-            .setOnClickListener {
+        btnLiveTv.setOnClickListener {
 
-                startActivity(
-                    Intent(
-                        this,
-                        ChannelListActivity::class.java
-                    ).putExtra(
-                        "CATEGORY",
-                        "LIVE"
-                    )
+            animateButton(btnLiveTv)
+
+            startActivity(
+                Intent(
+                    this,
+                    PlaylistListActivity::class.java
                 )
-            }
+            )
+        }
 
-        // FILMLER
+        btnMovies.setOnClickListener {
 
-        findViewById<Button>(R.id.cardMovies)
-            .setOnClickListener {
+            animateButton(btnMovies)
 
-                startActivity(
-                    Intent(
-                        this,
-                        ChannelListActivity::class.java
-                    ).putExtra(
-                        "CATEGORY",
-                        "MOVIES"
-                    )
+            val intent = Intent(
+                this,
+                ChannelListActivity::class.java
+            )
+
+            intent.putExtra("content_type", "movie")
+
+            startActivity(intent)
+        }
+
+        btnSeries.setOnClickListener {
+
+            animateButton(btnSeries)
+
+            val intent = Intent(
+                this,
+                ChannelListActivity::class.java
+            )
+
+            intent.putExtra("content_type", "series")
+
+            startActivity(intent)
+        }
+
+        btnSettings.setOnClickListener {
+
+            animateButton(btnSettings)
+
+            startActivity(
+                Intent(
+                    this,
+                    SettingsActivity::class.java
                 )
-            }
+            )
+        }
+    }
 
-        // DIZILER
+    private fun animateButton(button: Button) {
 
-        findViewById<Button>(R.id.cardSeries)
-            .setOnClickListener {
+        val animation =
+            AnimationUtils.loadAnimation(
+                this,
+                android.R.anim.fade_in
+            )
 
-                startActivity(
-                    Intent(
-                        this,
-                        ChannelListActivity::class.java
-                    ).putExtra(
-                        "CATEGORY",
-                        "SERIES"
-                    )
-                )
-            }
+        button.startAnimation(animation)
 
-        // KAYITLI LISTELER
+        val vibrator =
+            getSystemService(VIBRATOR_SERVICE)
+                    as Vibrator
 
-        findViewById<Button>(R.id.cardPlaylists)
-            .setOnClickListener {
-
-                startActivity(
-                    Intent(
-                        this,
-                        PlaylistListActivity::class.java
-                    )
-                )
-            }
-
-        // AYARLAR
-
-        findViewById<Button>(R.id.cardSettings)
-            .setOnClickListener {
-
-                startActivity(
-                    Intent(
-                        this,
-                        SettingsActivity::class.java
-                    )
-                )
-            }
+        vibrator.vibrate(
+            VibrationEffect.createOneShot(
+                40,
+                VibrationEffect.DEFAULT_AMPLITUDE
+            )
+        )
     }
 }

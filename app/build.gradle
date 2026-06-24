@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
 
-        applicationId "com.media.iptvplayer"
+        applicationId "com.media.iptvplayer.v2"
 
         minSdk 24
         targetSdk 36

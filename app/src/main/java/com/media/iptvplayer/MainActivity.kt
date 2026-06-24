@@ -13,8 +13,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // Canlı TV
-
         findViewById<Button>(R.id.cardLive)
             .setOnClickListener {
 
@@ -26,33 +24,26 @@ class MainActivity : AppCompatActivity() {
                 )
             }
 
-        // Filmler
-
         findViewById<Button>(R.id.cardMovies)
             .setOnClickListener {
 
-                startActivity(
-                    Intent(
-                        this,
-                        AddPlaylistActivity::class.java
-                    )
-                )
             }
-
-        // Diziler
 
         findViewById<Button>(R.id.cardSeries)
             .setOnClickListener {
 
+            }
+
+        findViewById<Button>(R.id.cardPlaylists)
+            .setOnClickListener {
+
                 startActivity(
                     Intent(
                         this,
-                        AddPlaylistActivity::class.java
+                        PlaylistListActivity::class.java
                     )
                 )
             }
-
-        // Ayarlar
 
         findViewById<Button>(R.id.cardSettings)
             .setOnClickListener {

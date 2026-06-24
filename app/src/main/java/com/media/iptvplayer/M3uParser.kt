@@ -1,19 +1,20 @@
 package com.media.iptvplayer
 
-import android.util.Log
 import com.media.iptvplayer.model.Channel
 
 object M3uParser {
 
     fun parse(content: String): List<Channel> {
 
-        Log.d("M3U_TEST", "Dosya boyutu = ${content.length}")
-
         val channels = mutableListOf<Channel>()
 
-        val lines = content.lines()
+        val lines = content
+            .replace("\r\n", "\n")
+            .replace("\r", "\n")
+            .split("\n")
 
         var currentName = ""
+        var currentGroup = ""
 
         for (lineRaw in lines) {
 
@@ -22,13 +23,14 @@ object M3uParser {
             if (line.startsWith("#EXTINF")) {
 
                 currentName =
-                    line.substringAfterLast(",")
-                        .trim()
+                    line.substringAfterLast(",").trim()
 
-                Log.d(
-                    "M3U_TEST",
-                    "Kanal adı = $currentName"
-                )
+                currentGroup =
+                    Regex("""group-title="([^"]*)"""")
+                        .find(line)
+                        ?.groupValues
+                        ?.get(1)
+                        ?: ""
             }
 
             else if (
@@ -36,31 +38,48 @@ object M3uParser {
                 line.startsWith("https://")
             ) {
 
-                Log.d(
-                    "M3U_TEST",
-                    "URL bulundu = $line"
-                )
+                val category = when {
+
+                    currentGroup.contains(
+                        "film",
+                        true
+                    ) -> "MOVIES"
+
+                    currentGroup.contains(
+                        "movie",
+                        true
+                    ) -> "MOVIES"
+
+                    currentGroup.contains(
+                        "vod",
+                        true
+                    ) -> "MOVIES"
+
+                    currentGroup.contains(
+                        "dizi",
+                        true
+                    ) -> "SERIES"
+
+                    currentGroup.contains(
+                        "series",
+                        true
+                    ) -> "SERIES"
+
+                    else -> "LIVE"
+                }
 
                 channels.add(
-                    Channel(
-                        name =
-                        if (currentName.isEmpty())
-                            "İsimsiz Kanal"
-                        else currentName,
 
+                    Channel(
+                        name = currentName,
                         url = line,
-                        logo = "",
-                        group = ""
+                        group = currentGroup,
+                        category = category
                     )
                 )
             }
         }
 
-        Log.d(
-            "M3U_TEST",
-            "Toplam kanal = ${channels.size}"
-        )
-
         return channels
     }
-}
+                          }

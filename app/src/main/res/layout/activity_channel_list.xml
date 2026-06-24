@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#06131A">
 
-    <!-- Arama -->
+    <!-- Arama Kutusu -->
 
     <EditText
         android:id="@+id/etSearch"
@@ -24,7 +25,8 @@
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/groupContainer"
@@ -35,14 +37,16 @@
 
     </HorizontalScrollView>
 
-    <!-- Kanallar -->
+    <!-- Kanal Listesi -->
 
     <ListView
         android:id="@+id/listChannels"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="#06131A"
         android:divider="#202020"
-        android:dividerHeight="1dp"/>
+        android:dividerHeight="1dp"
+        android:fastScrollEnabled="true"/>
 
 </LinearLayout>

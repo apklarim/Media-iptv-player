@@ -5,7 +5,12 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlaylistListActivity : AppCompatActivity() {
 
@@ -33,27 +38,80 @@ class PlaylistListActivity : AppCompatActivity() {
         val playlists =
             PlaylistManager.getPlaylists(this)
 
-        val items = mutableListOf<String>()
+        val names =
+            playlists.map {
 
-        playlists.forEach {
-
-            items.add("${it.name} (${it.type})")
-        }
+                "${it.name} (${it.type})"
+            }
 
         listView.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_list_item_1,
-            items
+            names
         )
 
         listView.setOnItemClickListener { _, _, position, _ ->
 
-            startActivity(
-                Intent(
-                    this,
-                    ChannelListActivity::class.java
+            val playlist = playlists[position]
+
+            if (playlist.type == "M3U_FILE") {
+
+                startActivity(
+                    Intent(
+                        this,
+                        ChannelListActivity::class.java
+                    )
                 )
-            )
+
+                return@setOnItemClickListener
+            }
+
+            lifecycleScope.launch {
+
+                try {
+
+                    Toast.makeText(
+                        this@PlaylistListActivity,
+                        "Liste yükleniyor...",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    val content =
+                        withContext(Dispatchers.IO) {
+
+                            NetworkUtils.downloadText(
+                                playlist.url
+                            )
+                        }
+
+                    val channels =
+                        M3uParser.parse(content)
+
+                    ChannelRepository.channels =
+                        channels
+
+                    Toast.makeText(
+                        this@PlaylistListActivity,
+                        "${channels.size} kanal yüklendi",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    startActivity(
+                        Intent(
+                            this@PlaylistListActivity,
+                            ChannelListActivity::class.java
+                        )
+                    )
+
+                } catch (e: Exception) {
+
+                    Toast.makeText(
+                        this@PlaylistListActivity,
+                        "Hata: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
     }
 }

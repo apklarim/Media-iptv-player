@@ -27,9 +27,10 @@ class PlayerActivity : AppCompatActivity() {
             intent.getStringExtra("url")
                 ?: return
 
-        player =
-            ExoPlayer.Builder(this)
-                .build()
+        player = ExoPlayer.Builder(this)
+            .setSeekBackIncrementMs(10000)
+            .setSeekForwardIncrementMs(10000)
+            .build()
 
         playerView.player = player
 
@@ -44,35 +45,34 @@ class PlayerActivity : AppCompatActivity() {
 
         player.play()
 
-        // Film ve diziler için
-        // süre çubuğu + ileri/geri aktif
-
         playerView.setShowNextButton(false)
         playerView.setShowPreviousButton(false)
         playerView.setShowRewindButton(true)
         playerView.setShowFastForwardButton(true)
-
-        // 10 saniye geri
-        player.seekBackIncrement = 10000
-
-        // 10 saniye ileri
-        player.seekForwardIncrement = 10000
     }
 
     override fun onStart() {
         super.onStart()
-        player.play()
+
+        if (::player.isInitialized) {
+            player.play()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        player.pause()
+
+        if (::player.isInitialized) {
+            player.pause()
+        }
     }
 
     override fun onDestroy() {
 
         super.onDestroy()
 
-        player.release()
+        if (::player.isInitialized) {
+            player.release()
+        }
     }
 }

@@ -56,7 +56,8 @@ class ChannelListActivity : AppCompatActivity() {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(
                     s: CharSequence?,
@@ -69,11 +70,12 @@ class ChannelListActivity : AppCompatActivity() {
 
                 override fun afterTextChanged(
                     s: Editable?
-                ) {}
+                ) {
+                }
             }
         )
 
-        // KANAL TIKLAMA TESTİ
+        // Kanal tıklama
 
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
@@ -99,6 +101,35 @@ class ChannelListActivity : AppCompatActivity() {
             )
 
             startActivity(intent)
+        }
+
+        // Favorilere ekleme
+
+        listChannels.setOnItemLongClickListener {
+                _, _, position, _ ->
+
+            FavoriteManager.toggleFavorite(
+                this,
+                filteredChannels[position].name
+            )
+
+            filteredChannels[position].isFavorite =
+                !filteredChannels[position].isFavorite
+
+            allChannels.forEach {
+
+                if (it.name ==
+                    filteredChannels[position].name
+                ) {
+
+                    it.isFavorite =
+                        filteredChannels[position].isFavorite
+                }
+            }
+
+            applyFilter()
+
+            true
         }
     }
 
@@ -197,11 +228,11 @@ class ChannelListActivity : AppCompatActivity() {
 
                 groupOk && searchOk
 
-            }.sortedByDescending {
-
-                it.isFavorite
-
-            }.toMutableList()
+            }
+                .sortedByDescending {
+                    it.isFavorite
+                }
+                .toMutableList()
 
         loadChannels()
     }

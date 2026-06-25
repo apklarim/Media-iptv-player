@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:weightSum="2"
     android:background="#000000">
 
-    <!-- SOL PLAYER -->
+    <!-- SOL TARAF -->
 
     <FrameLayout
+        android:id="@+id/container1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -20,8 +21,9 @@
             android:id="@+id/playerView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:resize_mode="zoom"
-            app:use_controller="true" />
+            app:resize_mode="fill"
+            app:surface_type="texture_view"
+            app:use_controller="true"/>
 
         <ListView
             android:id="@+id/listChannels1"
@@ -29,13 +31,14 @@
             android:layout_height="250dp"
             android:layout_gravity="bottom"
             android:background="#CC10232B"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </FrameLayout>
 
-    <!-- SAĞ PLAYER -->
+    <!-- SAĞ TARAF -->
 
     <FrameLayout
+        android:id="@+id/container2"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -44,8 +47,9 @@
             android:id="@+id/playerView2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:resize_mode="zoom"
-            app:use_controller="true" />
+            app:resize_mode="fill"
+            app:surface_type="texture_view"
+            app:use_controller="true"/>
 
         <ListView
             android:id="@+id/listChannels2"
@@ -53,7 +57,7 @@
             android:layout_height="250dp"
             android:layout_gravity="bottom"
             android:background="#CC10232B"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </FrameLayout>
 

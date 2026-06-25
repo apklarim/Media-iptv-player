@@ -1,61 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:label="Media IPTV Player"
+        android:icon="@mipmap/ic_launcher"
+        android:label="MEDYA IPTV Player"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        android:theme="@style/Theme.MediaIPTVPlayer">
 
         <activity
-            android:name=".DualPlayerActivity"
-            android:exported="false"/>
+            android:name=".HiddenGroupsActivity"
+            android:exported="false" />
 
         <activity
             android:name=".PlayerActivity"
-            android:supportsPictureInPicture="true"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:exported="false"/>
-
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false"/>
-
-        <activity
-            android:name=".PlaylistListActivity"
-            android:exported="false"/>
-
-        <activity
-            android:name=".AddPlaylistActivity"
-            android:exported="false"/>
-
-        <activity
-            android:name=".M3uUrlActivity"
-            android:exported="false"/>
-
-        <activity
-            android:name=".XtreamActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".ChannelListActivity"
-            android:exported="false"/>
+            android:exported="false" />
+
+        <activity
+            android:name=".PlaylistListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AddPlaylistActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"
             android:exported="true">
 
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
         </activity>

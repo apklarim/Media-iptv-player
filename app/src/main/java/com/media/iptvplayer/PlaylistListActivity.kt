@@ -60,11 +60,8 @@ class PlaylistListActivity : AppCompatActivity() {
 
         val names =
             playlists.map {
-
                 "${it.name} (${it.type})"
             }
-
-        // Modern kart görünümü
 
         listView.adapter =
             PlaylistAdapter(
@@ -72,12 +69,19 @@ class PlaylistListActivity : AppCompatActivity() {
                 names
             )
 
-        // Kısa tıklama
+        // Liste seçildi
 
         listView.setOnItemClickListener {
                 _, _, position, _ ->
 
             val playlist = playlists[position]
+
+            // Son seçilen listeyi kaydet
+
+            LastPlaylistManager.saveLastPlaylist(
+                this,
+                playlist.id
+            )
 
             lifecycleScope.launch {
 
@@ -157,8 +161,7 @@ class PlaylistListActivity : AppCompatActivity() {
         listView.setOnItemLongClickListener {
                 _, _, position, _ ->
 
-            val playlist =
-                playlists[position]
+            val playlist = playlists[position]
 
             AlertDialog.Builder(this)
                 .setTitle(
@@ -213,7 +216,6 @@ class PlaylistListActivity : AppCompatActivity() {
                                         val index =
                                             allLists
                                                 .indexOfFirst {
-
                                                     it.id ==
                                                             playlist.id
                                                 }

@@ -87,6 +87,20 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+
+        // Uzun basınca Gizli Gruplar ekranı açılır
+
+        btnPlaylists.setOnLongClickListener {
+
+            startActivity(
+                Intent(
+                    this,
+                    HiddenGroupsActivity::class.java
+                )
+            )
+
+            true
+        }
     }
 
     private fun animateButton(view: View) {

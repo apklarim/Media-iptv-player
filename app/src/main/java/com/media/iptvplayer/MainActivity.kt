@@ -1,10 +1,15 @@
 package com.media.iptvplayer
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,17 +24,12 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        btnLiveTv =
-            findViewById(R.id.btnLiveTv)
+        autoLoadLastPlaylist()
 
-        btnMovies =
-            findViewById(R.id.btnMovies)
-
-        btnSeries =
-            findViewById(R.id.btnSeries)
-
-        btnPlaylists =
-            findViewById(R.id.btnPlaylists)
+        btnLiveTv = findViewById(R.id.btnLiveTv)
+        btnMovies = findViewById(R.id.btnMovies)
+        btnSeries = findViewById(R.id.btnSeries)
+        btnPlaylists = findViewById(R.id.btnPlaylists)
 
         btnLiveTv.setOnClickListener {
 
@@ -89,9 +89,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun animateButton(
-        view: View
-    ) {
+    private fun animateButton(view: View) {
 
         view.animate()
             .scaleX(1.04f)
@@ -106,5 +104,64 @@ class MainActivity : AppCompatActivity() {
                     .start()
             }
             .start()
+    }
+
+    private fun autoLoadLastPlaylist() {
+
+        val lastId =
+            LastPlaylistManager
+                .getLastPlaylistId(this)
+                ?: return
+
+        val playlist =
+            PlaylistManager
+                .getPlaylists(this)
+                .find {
+                    it.id == lastId
+                } ?: return
+
+        lifecycleScope.launch {
+
+            try {
+
+                var content = ""
+
+                if (playlist.type == "M3U_FILE") {
+
+                    content =
+                        withContext(Dispatchers.IO) {
+
+                            contentResolver
+                                .openInputStream(
+                                    Uri.parse(
+                                        playlist.url
+                                    )
+                                )
+                                ?.bufferedReader()
+                                ?.use {
+                                    it.readText()
+                                } ?: ""
+                        }
+
+                } else {
+
+                    content =
+                        withContext(Dispatchers.IO) {
+
+                            NetworkUtils.downloadText(
+                                playlist.url
+                            )
+                        }
+                }
+
+                ChannelRepository.channels =
+                    M3uParser.parse(content)
+                        .toMutableList()
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
+        }
     }
 }

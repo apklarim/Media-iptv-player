@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -126,6 +127,14 @@ class PlayerActivity : AppCompatActivity() {
 
         txtChannelName.text =
             channel.name
+
+        // TEST AMAÇLI URL GÖSTER
+
+        Toast.makeText(
+            this,
+            "URL:\n${channel.url}",
+            Toast.LENGTH_LONG
+        ).show()
 
         PlayerPreferences
             .saveLastChannel(

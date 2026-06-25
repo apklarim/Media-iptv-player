@@ -8,16 +8,21 @@
     android:gravity="center_vertical"
     android:padding="10dp"
     android:layout_margin="4dp"
-    android:background="@drawable/channel_selector"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:background="#10212A"
+
+    android:clickable="false"
+    android:focusable="false"
+    android:focusableInTouchMode="false">
 
     <ImageView
         android:id="@+id/imgLogo"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="fitCenter"
-        android:src="@android:drawable/ic_menu_gallery"/>
+        android:src="@android:drawable/ic_menu_gallery"
+
+        android:clickable="false"
+        android:focusable="false"/>
 
     <TextView
         android:id="@+id/txtChannelName"
@@ -27,6 +32,9 @@
         android:layout_marginStart="16dp"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+
+        android:clickable="false"
+        android:focusable="false"/>
 
 </LinearLayout>

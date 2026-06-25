@@ -5,14 +5,16 @@ import android.content.Context
 object HiddenGroupsManager {
 
     private const val PREFS = "hidden_groups"
+    private const val KEY_GROUPS = "groups"
 
     fun hideGroup(
         context: Context,
         group: String
     ) {
 
-        val groups = getHiddenGroups(context)
-            .toMutableSet()
+        val groups =
+            getHiddenGroups(context)
+                .toMutableSet()
 
         groups.add(group)
 
@@ -22,7 +24,7 @@ object HiddenGroupsManager {
         )
             .edit()
             .putStringSet(
-                "groups",
+                KEY_GROUPS,
                 groups
             )
             .apply()
@@ -33,8 +35,9 @@ object HiddenGroupsManager {
         group: String
     ) {
 
-        val groups = getHiddenGroups(context)
-            .toMutableSet()
+        val groups =
+            getHiddenGroups(context)
+                .toMutableSet()
 
         groups.remove(group)
 
@@ -44,7 +47,7 @@ object HiddenGroupsManager {
         )
             .edit()
             .putStringSet(
-                "groups",
+                KEY_GROUPS,
                 groups
             )
             .apply()
@@ -69,8 +72,36 @@ object HiddenGroupsManager {
                 Context.MODE_PRIVATE
             )
             .getStringSet(
-                "groups",
+                KEY_GROUPS,
                 emptySet()
             ) ?: emptySet()
+    }
+
+    // Tüm gizli grupları aç
+
+    fun clearHiddenGroups(
+        context: Context
+    ) {
+
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .remove(KEY_GROUPS)
+            .apply()
+    }
+
+    // Tek grup aç
+
+    fun restoreGroup(
+        context: Context,
+        group: String
+    ) {
+
+        unhideGroup(
+            context,
+            group
+        )
     }
 }

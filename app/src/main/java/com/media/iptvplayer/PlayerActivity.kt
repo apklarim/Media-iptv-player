@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -17,8 +19,10 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var player: ExoPlayer
     private lateinit var playerView: PlayerView
     private lateinit var channelList: ListView
+    private lateinit var txtChannelName: TextView
 
     private var channels = ChannelRepository.channels
+    private var currentIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -28,32 +32,74 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView = findViewById(R.id.playerView)
         channelList = findViewById(R.id.listChannels)
+        txtChannelName = findViewById(R.id.txtChannelName)
 
-        val url = intent.getStringExtra("url")
+        val btnPrev =
+            findViewById<Button>(R.id.btnPrev)
 
-        if (url.isNullOrEmpty()) {
-            finish()
-            return
-        }
+        val btnNext =
+            findViewById<Button>(R.id.btnNext)
 
-        player = ExoPlayer.Builder(this)
-            .setSeekBackIncrementMs(10000)
-            .setSeekForwardIncrementMs(10000)
-            .build()
+        val url =
+            intent.getStringExtra("url")
+
+        currentIndex =
+            channels.indexOfFirst {
+                it.url == url
+            }
+
+        if (currentIndex < 0)
+            currentIndex = 0
+
+        player = ExoPlayer.Builder(this).build()
 
         playerView.player = player
 
         playerView.resizeMode =
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
-        val mediaItem =
-            MediaItem.fromUri(Uri.parse(url))
+        playChannel(currentIndex)
 
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.playWhenReady = true
+        btnPrev.setOnClickListener {
+
+            if (currentIndex > 0) {
+
+                currentIndex--
+
+                playChannel(currentIndex)
+            }
+        }
+
+        btnNext.setOnClickListener {
+
+            if (currentIndex <
+                channels.size - 1) {
+
+                currentIndex++
+
+                playChannel(currentIndex)
+            }
+        }
 
         loadChannelList()
+    }
+
+    private fun playChannel(index: Int) {
+
+        val channel = channels[index]
+
+        txtChannelName.text = channel.name
+
+        val mediaItem =
+            MediaItem.fromUri(
+                Uri.parse(channel.url)
+            )
+
+        player.setMediaItem(mediaItem)
+
+        player.prepare()
+
+        player.playWhenReady = true
     }
 
     private fun loadChannelList() {
@@ -65,16 +111,12 @@ class PlayerActivity : AppCompatActivity() {
                 channels.map { it.name }
             )
 
-        channelList.setOnItemClickListener { _, _, position, _ ->
+        channelList.setOnItemClickListener {
+                _, _, position, _ ->
 
-            val mediaItem =
-                MediaItem.fromUri(
-                    Uri.parse(channels[position].url)
-                )
+            currentIndex = position
 
-            player.setMediaItem(mediaItem)
-            player.prepare()
-            player.play()
+            playChannel(position)
 
             channelList.visibility = View.GONE
         }
@@ -85,11 +127,14 @@ class PlayerActivity : AppCompatActivity() {
         event: KeyEvent?
     ): Boolean {
 
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
-            keyCode == KeyEvent.KEYCODE_ENTER) {
+        if (keyCode ==
+            KeyEvent.KEYCODE_DPAD_CENTER ||
+            keyCode ==
+            KeyEvent.KEYCODE_ENTER) {
 
             channelList.visibility =
-                if (channelList.visibility == View.VISIBLE)
+                if (channelList.visibility ==
+                    View.VISIBLE)
                     View.GONE
                 else
                     View.VISIBLE
@@ -97,7 +142,10 @@ class PlayerActivity : AppCompatActivity() {
             return true
         }
 
-        return super.onKeyDown(keyCode, event)
+        return super.onKeyDown(
+            keyCode,
+            event
+        )
     }
 
     override fun onDestroy() {

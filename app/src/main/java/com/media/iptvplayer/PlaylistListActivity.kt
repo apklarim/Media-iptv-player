@@ -42,6 +42,15 @@ class PlaylistListActivity : AppCompatActivity() {
         loadPlaylists(listView)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val listView =
+            findViewById<ListView>(R.id.listPlaylists)
+
+        loadPlaylists(listView)
+    }
+
     private fun loadPlaylists(listView: ListView) {
 
         val playlists =
@@ -65,18 +74,6 @@ class PlaylistListActivity : AppCompatActivity() {
 
             val playlist = playlists[position]
 
-            if (playlist.type == "M3U_FILE") {
-
-                startActivity(
-                    Intent(
-                        this,
-                        MainActivity::class.java
-                    )
-                )
-
-                return@setOnItemClickListener
-            }
-
             lifecycleScope.launch {
 
                 try {
@@ -87,16 +84,50 @@ class PlaylistListActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    val content =
-                        withContext(Dispatchers.IO) {
+                    var content = ""
 
-                            NetworkUtils.downloadText(
-                                playlist.url
-                            )
-                        }
+                    if (playlist.type == "M3U_FILE") {
+
+                        content =
+                            withContext(Dispatchers.IO) {
+
+                                contentResolver
+                                    .openInputStream(
+                                        android.net.Uri.parse(
+                                            playlist.url
+                                        )
+                                    )
+                                    ?.bufferedReader()
+                                    ?.use {
+                                        it.readText()
+                                    } ?: ""
+                            }
+
+                    } else {
+
+                        content =
+                            withContext(Dispatchers.IO) {
+
+                                NetworkUtils.downloadText(
+                                    playlist.url
+                                )
+                            }
+                    }
+
+                    // Önce eski kanalları temizle
+
+                    ChannelRepository.channels.clear()
+
+                    // Yeni kanalları yükle
 
                     ChannelRepository.channels =
                         M3uParser.parse(content)
+
+                    Toast.makeText(
+                        this@PlaylistListActivity,
+                        "Liste yüklendi",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     startActivity(
                         Intent(
@@ -118,7 +149,8 @@ class PlaylistListActivity : AppCompatActivity() {
 
         // Uzun basınca menü
 
-        listView.setOnItemLongClickListener { _, _, position, _ ->
+        listView.setOnItemLongClickListener {
+                _, _, position, _ ->
 
             val playlist = playlists[position]
 

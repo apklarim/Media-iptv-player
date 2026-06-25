@@ -1,6 +1,7 @@
 package com.media.iptvplayer
 
 import android.app.PictureInPictureParams
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -64,6 +65,11 @@ class PlayerActivity : AppCompatActivity() {
                 R.id.btnNext
             )
 
+        val btnDual =
+            findViewById<Button>(
+                R.id.btnDual
+            )
+
         val url =
             intent.getStringExtra(
                 "url"
@@ -97,12 +103,48 @@ class PlayerActivity : AppCompatActivity() {
             nextChannel()
         }
 
+        // 2X Dual Player
+
+        btnDual.setOnClickListener {
+
+            if (channels.size < 2)
+                return@setOnClickListener
+
+            val secondIndex =
+                if (
+                    currentIndex + 1 <
+                    channels.size
+                )
+                    currentIndex + 1
+                else
+                    0
+
+            startActivity(
+
+                Intent(
+                    this,
+                    DualPlayerActivity::class.java
+                )
+                    .putExtra(
+                        "url1",
+                        channels[currentIndex].url
+                    )
+                    .putExtra(
+                        "url2",
+                        channels[secondIndex].url
+                    )
+            )
+        }
+
         loadChannelList()
     }
 
-    private fun playChannel(index: Int) {
+    private fun playChannel(
+        index: Int
+    ) {
 
-        if (index < 0 ||
+        if (
+            index < 0 ||
             index >= channels.size
         ) return
 
@@ -127,7 +169,10 @@ class PlayerActivity : AppCompatActivity() {
                 )
             )
 
-        player.setMediaItem(mediaItem)
+        player.setMediaItem(
+            mediaItem
+        )
+
         player.prepare()
         player.playWhenReady = true
     }
@@ -136,7 +181,8 @@ class PlayerActivity : AppCompatActivity() {
 
         super.onUserLeaveHint()
 
-        if (Build.VERSION.SDK_INT >=
+        if (
+            Build.VERSION.SDK_INT >=
             Build.VERSION_CODES.O
         ) {
 
@@ -159,17 +205,20 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex > 0) {
 
             currentIndex--
+
             playChannel(currentIndex)
         }
     }
 
     private fun nextChannel() {
 
-        if (currentIndex <
+        if (
+            currentIndex <
             channels.size - 1
         ) {
 
             currentIndex++
+
             playChannel(currentIndex)
         }
     }
@@ -185,14 +234,15 @@ class PlayerActivity : AppCompatActivity() {
                 }
             )
 
-        channelList.setOnItemClickListener {
-                _, _, position, _ ->
+        channelList
+            .setOnItemClickListener {
+                    _, _, position, _ ->
 
-            playChannel(position)
+                playChannel(position)
 
-            channelList.visibility =
-                View.GONE
-        }
+                channelList.visibility =
+                    View.GONE
+            }
     }
 
     override fun onKeyDown(
@@ -240,7 +290,9 @@ class PlayerActivity : AppCompatActivity() {
 
         super.onDestroy()
 
-        if (::player.isInitialized)
+        if (::player.isInitialized) {
+
             player.release()
+        }
     }
 }

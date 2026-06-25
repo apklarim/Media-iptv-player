@@ -1,15 +1,18 @@
 package com.media.iptvplayer
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 
 class DualPlayerActivity : AppCompatActivity() {
@@ -36,6 +39,28 @@ class DualPlayerActivity : AppCompatActivity() {
             R.layout.activity_dual_player
         )
 
+        val rootLayout =
+            findViewById<LinearLayout>(
+                R.id.rootLayout
+            )
+
+        // Dikeyde alt alta
+        // Yatayda yan yana
+
+        if (
+            resources.configuration.orientation ==
+            Configuration.ORIENTATION_LANDSCAPE
+        ) {
+
+            rootLayout.orientation =
+                LinearLayout.HORIZONTAL
+
+        } else {
+
+            rootLayout.orientation =
+                LinearLayout.VERTICAL
+        }
+
         val playerView1 =
             findViewById<PlayerView>(
                 R.id.playerView1
@@ -46,6 +71,12 @@ class DualPlayerActivity : AppCompatActivity() {
                 R.id.playerView2
             )
 
+        playerView1.resizeMode =
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+
+        playerView2.resizeMode =
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+
         list1 =
             findViewById(
                 R.id.listChannels1
@@ -55,8 +86,6 @@ class DualPlayerActivity : AppCompatActivity() {
             findViewById(
                 R.id.listChannels2
             )
-
-        // Başlangıçta listeleri gizle
 
         list1.visibility = View.GONE
         list2.visibility = View.GONE
@@ -72,57 +101,57 @@ class DualPlayerActivity : AppCompatActivity() {
         playerView1.player = player1
         playerView2.player = player2
 
-        // Sol player tıklanınca
-
         playerView1.setOnClickListener {
 
             list2.visibility = View.GONE
 
-            if (list1.visibility == View.VISIBLE) {
+            if (list1.visibility ==
+                View.VISIBLE
+            ) {
 
                 list1.visibility = View.GONE
 
             } else {
 
-                list1.visibility = View.VISIBLE
+                list1.visibility =
+                    View.VISIBLE
 
                 autoHideList(list1)
             }
         }
 
-        // Sağ player tıklanınca
-
         playerView2.setOnClickListener {
 
             list1.visibility = View.GONE
 
-            if (list2.visibility == View.VISIBLE) {
+            if (list2.visibility ==
+                View.VISIBLE
+            ) {
 
                 list2.visibility = View.GONE
 
             } else {
 
-                list2.visibility = View.VISIBLE
+                list2.visibility =
+                    View.VISIBLE
 
                 autoHideList(list2)
             }
         }
 
         val url1 =
-            intent.getStringExtra(
-                "url1"
-            )
+            intent.getStringExtra("url1")
 
         val url2 =
-            intent.getStringExtra(
-                "url2"
-            )
+            intent.getStringExtra("url2")
 
         if (!url1.isNullOrEmpty()) {
+
             playOnPlayer1(url1)
         }
 
         if (!url2.isNullOrEmpty()) {
+
             playOnPlayer2(url2)
         }
 

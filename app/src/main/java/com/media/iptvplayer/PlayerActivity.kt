@@ -21,85 +21,152 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var channelList: ListView
     private lateinit var txtChannelName: TextView
 
-    private var channels = ChannelRepository.channels
+    private var channels =
+        ChannelRepository.channels
+
     private var currentIndex = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_player)
+        setContentView(
+            R.layout.activity_player
+        )
 
-        playerView = findViewById(R.id.playerView)
-        channelList = findViewById(R.id.listChannels)
-        txtChannelName = findViewById(R.id.txtChannelName)
+        playerView =
+            findViewById(
+                R.id.playerView
+            )
+
+        channelList =
+            findViewById(
+                R.id.listChannels
+            )
+
+        txtChannelName =
+            findViewById(
+                R.id.txtChannelName
+            )
 
         val btnPrev =
-            findViewById<Button>(R.id.btnPrev)
+            findViewById<Button>(
+                R.id.btnPrev
+            )
 
         val btnNext =
-            findViewById<Button>(R.id.btnNext)
+            findViewById<Button>(
+                R.id.btnNext
+            )
 
         val url =
-            intent.getStringExtra("url")
+            intent.getStringExtra(
+                "url"
+            )
 
         currentIndex =
             channels.indexOfFirst {
                 it.url == url
             }
 
-        if (currentIndex < 0)
-            currentIndex = 0
+        if (currentIndex < 0) {
 
-        player = ExoPlayer.Builder(this).build()
+            val lastUrl =
+                PlayerPreferences
+                    .getLastChannel(this)
+
+            currentIndex =
+                channels.indexOfFirst {
+                    it.url == lastUrl
+                }
+
+            if (currentIndex < 0)
+                currentIndex = 0
+        }
+
+        player =
+            ExoPlayer.Builder(this)
+                .build()
 
         playerView.player = player
 
         playerView.resizeMode =
-            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            AspectRatioFrameLayout
+                .RESIZE_MODE_ZOOM
 
         playChannel(currentIndex)
 
         btnPrev.setOnClickListener {
 
-            if (currentIndex > 0) {
-
-                currentIndex--
-
-                playChannel(currentIndex)
-            }
+            previousChannel()
         }
 
         btnNext.setOnClickListener {
 
-            if (currentIndex <
-                channels.size - 1) {
-
-                currentIndex++
-
-                playChannel(currentIndex)
-            }
+            nextChannel()
         }
 
         loadChannelList()
     }
 
-    private fun playChannel(index: Int) {
+    private fun playChannel(
+        index: Int
+    ) {
 
-        val channel = channels[index]
+        if (index < 0 ||
+            index >= channels.size
+        ) return
 
-        txtChannelName.text = channel.name
+        currentIndex = index
+
+        val channel =
+            channels[index]
+
+        txtChannelName.text =
+            channel.name
+
+        PlayerPreferences
+            .saveLastChannel(
+                this,
+                channel.url
+            )
 
         val mediaItem =
             MediaItem.fromUri(
                 Uri.parse(channel.url)
             )
 
-        player.setMediaItem(mediaItem)
+        player.setMediaItem(
+            mediaItem
+        )
 
         player.prepare()
 
         player.playWhenReady = true
+    }
+
+    private fun previousChannel() {
+
+        if (currentIndex > 0) {
+
+            currentIndex--
+
+            playChannel(currentIndex)
+        }
+    }
+
+    private fun nextChannel() {
+
+        if (currentIndex <
+            channels.size - 1
+        ) {
+
+            currentIndex++
+
+            playChannel(currentIndex)
+        }
     }
 
     private fun loadChannelList() {
@@ -107,19 +174,23 @@ class PlayerActivity : AppCompatActivity() {
         channelList.adapter =
             ArrayAdapter(
                 this,
-                android.R.layout.simple_list_item_1,
-                channels.map { it.name }
+                android.R.layout
+                    .simple_list_item_1,
+
+                channels.map {
+                    it.name
+                }
             )
 
-        channelList.setOnItemClickListener {
-                _, _, position, _ ->
+        channelList
+            .setOnItemClickListener {
+                    _, _, position, _ ->
 
-            currentIndex = position
+                playChannel(position)
 
-            playChannel(position)
-
-            channelList.visibility = View.GONE
-        }
+                channelList.visibility =
+                    View.GONE
+            }
     }
 
     override fun onKeyDown(
@@ -127,19 +198,34 @@ class PlayerActivity : AppCompatActivity() {
         event: KeyEvent?
     ): Boolean {
 
-        if (keyCode ==
-            KeyEvent.KEYCODE_DPAD_CENTER ||
-            keyCode ==
-            KeyEvent.KEYCODE_ENTER) {
+        when (keyCode) {
 
-            channelList.visibility =
-                if (channelList.visibility ==
-                    View.VISIBLE)
-                    View.GONE
-                else
-                    View.VISIBLE
+            KeyEvent.KEYCODE_DPAD_UP -> {
 
-            return true
+                previousChannel()
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+
+                nextChannel()
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_CENTER,
+            KeyEvent.KEYCODE_ENTER -> {
+
+                channelList.visibility =
+                    if (
+                        channelList.visibility ==
+                        View.VISIBLE
+                    )
+                        View.GONE
+                    else
+                        View.VISIBLE
+
+                return true
+            }
         }
 
         return super.onKeyDown(
@@ -153,6 +239,7 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
 
         if (::player.isInitialized) {
+
             player.release()
         }
     }

@@ -28,15 +28,17 @@ class DualPlayerActivity : AppCompatActivity() {
 
     private lateinit var rootLayout: LinearLayout
 
-    private val channels =
-        ChannelRepository.channels
+    private val channels = ChannelRepository.channels
 
     private val handler =
         Handler(Looper.getMainLooper())
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
+    private var currentUrl1 = ""
+    private var currentUrl2 = ""
+
+    private var selectedPlayer = 1
+
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
@@ -81,47 +83,73 @@ class DualPlayerActivity : AppCompatActivity() {
         playerView1.player = player1
         playerView2.player = player2
 
+        currentUrl1 =
+            intent.getStringExtra("url1") ?: ""
+
+        currentUrl2 =
+            intent.getStringExtra("url2") ?: ""
+
+        if (currentUrl1.isNotEmpty())
+            playOnPlayer1(currentUrl1)
+
+        if (currentUrl2.isNotEmpty())
+            playOnPlayer2(currentUrl2)
+
+        // Başlangıçta sadece sol player ses versin
+
+        selectPlayer(1)
+
         playerView1.setOnClickListener {
+
+            selectPlayer(1)
 
             list2.visibility = View.GONE
 
-            if (list1.visibility == View.VISIBLE) {
+            list1.visibility =
+                if (list1.visibility ==
+                    View.VISIBLE)
+                    View.GONE
+                else
+                    View.VISIBLE
 
-                list1.visibility = View.GONE
-
-            } else {
-
-                list1.visibility = View.VISIBLE
-
-                autoHideList(list1)
-            }
+            autoHideList(list1)
         }
 
         playerView2.setOnClickListener {
 
+            selectPlayer(2)
+
             list1.visibility = View.GONE
 
-            if (list2.visibility == View.VISIBLE) {
+            list2.visibility =
+                if (list2.visibility ==
+                    View.VISIBLE)
+                    View.GONE
+                else
+                    View.VISIBLE
 
-                list2.visibility = View.GONE
-
-            } else {
-
-                list2.visibility = View.VISIBLE
-
-                autoHideList(list2)
-            }
-        }
-
-        intent.getStringExtra("url1")?.let {
-            playOnPlayer1(it)
-        }
-
-        intent.getStringExtra("url2")?.let {
-            playOnPlayer2(it)
+            autoHideList(list2)
         }
 
         loadLists()
+    }
+
+    private fun selectPlayer(
+        playerNo: Int
+    ) {
+
+        selectedPlayer = playerNo
+
+        if (playerNo == 1) {
+
+            player1.volume = 1f
+            player2.volume = 0f
+
+        } else {
+
+            player1.volume = 0f
+            player2.volume = 1f
+        }
     }
 
     private fun updateOrientation() {
@@ -148,6 +176,18 @@ class DualPlayerActivity : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
 
         updateOrientation()
+
+        handler.postDelayed({
+
+            if (currentUrl1.isNotEmpty())
+                playOnPlayer1(currentUrl1)
+
+            if (currentUrl2.isNotEmpty())
+                playOnPlayer2(currentUrl2)
+
+            selectPlayer(selectedPlayer)
+
+        }, 500)
     }
 
     private fun loadLists() {
@@ -172,31 +212,37 @@ class DualPlayerActivity : AppCompatActivity() {
         list1.setOnItemClickListener {
                 _, _, position, _ ->
 
-            playOnPlayer1(
+            currentUrl1 =
                 channels[position].url
-            )
+
+            playOnPlayer1(currentUrl1)
+
+            selectPlayer(1)
 
             handler.postDelayed({
 
                 list1.visibility =
                     View.GONE
 
-            }, 3000)
+            }, 2000)
         }
 
         list2.setOnItemClickListener {
                 _, _, position, _ ->
 
-            playOnPlayer2(
+            currentUrl2 =
                 channels[position].url
-            )
+
+            playOnPlayer2(currentUrl2)
+
+            selectPlayer(2)
 
             handler.postDelayed({
 
                 list2.visibility =
                     View.GONE
 
-            }, 3000)
+            }, 2000)
         }
     }
 

@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="10dp"
-    android:layout_margin="4dp"
-    android:background="#10212A"
-
-    android:clickable="false"
-    android:focusable="false"
-    android:focusableInTouchMode="false">
+    android:layout_height="260dp"
+    android:orientation="vertical"
+    android:padding="6dp"
+    android:background="#10212A">
 
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:scaleType="fitCenter"
-        android:src="@android:drawable/ic_menu_gallery"
-
-        android:clickable="false"
-        android:focusable="false"/>
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery"/>
 
     <TextView
         android:id="@+id/txtChannelName"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="16dp"
+        android:paddingTop="8dp"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
-
-        android:clickable="false"
-        android:focusable="false"/>
+        android:maxLines="2"/>
 
 </LinearLayout>

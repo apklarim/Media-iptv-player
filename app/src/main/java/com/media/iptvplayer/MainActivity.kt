@@ -111,7 +111,8 @@ class MainActivity : AppCompatActivity() {
         val lastId =
             LastPlaylistManager
                 .getLastPlaylistId(this)
-                ?: return
+
+        if (lastId == -1L) return
 
         val playlist =
             PlaylistManager

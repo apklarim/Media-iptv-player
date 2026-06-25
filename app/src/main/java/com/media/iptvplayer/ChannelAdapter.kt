@@ -12,7 +12,8 @@ import com.media.iptvplayer.model.Channel
 
 class ChannelAdapter(
     context: Context,
-    private val channels: List<Channel>
+    private val channels: List<Channel>,
+    private val category: String
 ) : ArrayAdapter<Channel>(
     context,
     0,
@@ -25,10 +26,16 @@ class ChannelAdapter(
         parent: ViewGroup
     ): View {
 
+        val layoutId = if (category == "LIVE") {
+            R.layout.item_channel_live
+        } else {
+            R.layout.item_channel
+        }
+
         val view = convertView ?: LayoutInflater
             .from(context)
             .inflate(
-                R.layout.item_channel,
+                layoutId,
                 parent,
                 false
             )

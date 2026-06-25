@@ -12,8 +12,7 @@
 
         <activity
             android:name=".DualPlayerActivity"
-            android:exported="false"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"/>
+            android:exported="false"/>
 
         <activity
             android:name=".HiddenGroupsActivity"

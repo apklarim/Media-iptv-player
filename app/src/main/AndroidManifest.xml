@@ -11,6 +11,10 @@
         android:theme="@style/Theme.MediaIPTVPlayer">
 
         <activity
+            android:name=".DualPlayerActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".HiddenGroupsActivity"
             android:exported="false"/>
 
@@ -18,8 +22,7 @@
             android:name=".PlayerActivity"
             android:exported="false"
             android:supportsPictureInPicture="true"
-            android:configChanges=
-                "screenSize|smallestScreenSize|screenLayout|orientation"/>
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"/>
 
         <activity
             android:name=".ChannelListActivity"

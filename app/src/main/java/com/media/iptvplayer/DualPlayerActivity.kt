@@ -20,8 +20,13 @@ class DualPlayerActivity : AppCompatActivity() {
     private lateinit var player1: ExoPlayer
     private lateinit var player2: ExoPlayer
 
+    private lateinit var playerView1: PlayerView
+    private lateinit var playerView2: PlayerView
+
     private lateinit var list1: ListView
     private lateinit var list2: ListView
+
+    private lateinit var rootLayout: LinearLayout
 
     private val channels =
         ChannelRepository.channels
@@ -39,53 +44,28 @@ class DualPlayerActivity : AppCompatActivity() {
             R.layout.activity_dual_player
         )
 
-        val rootLayout =
-            findViewById<LinearLayout>(
-                R.id.rootLayout
-            )
+        rootLayout =
+            findViewById(R.id.rootLayout)
 
-        // Dikeyde alt alta
-        // Yatayda yan yana
+        playerView1 =
+            findViewById(R.id.playerView1)
 
-        if (
-            resources.configuration.orientation ==
-            Configuration.ORIENTATION_LANDSCAPE
-        ) {
+        playerView2 =
+            findViewById(R.id.playerView2)
 
-            rootLayout.orientation =
-                LinearLayout.HORIZONTAL
+        list1 =
+            findViewById(R.id.listChannels1)
 
-        } else {
+        list2 =
+            findViewById(R.id.listChannels2)
 
-            rootLayout.orientation =
-                LinearLayout.VERTICAL
-        }
-
-        val playerView1 =
-            findViewById<PlayerView>(
-                R.id.playerView1
-            )
-
-        val playerView2 =
-            findViewById<PlayerView>(
-                R.id.playerView2
-            )
+        updateOrientation()
 
         playerView1.resizeMode =
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
         playerView2.resizeMode =
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-
-        list1 =
-            findViewById(
-                R.id.listChannels1
-            )
-
-        list2 =
-            findViewById(
-                R.id.listChannels2
-            )
 
         list1.visibility = View.GONE
         list2.visibility = View.GONE
@@ -105,16 +85,13 @@ class DualPlayerActivity : AppCompatActivity() {
 
             list2.visibility = View.GONE
 
-            if (list1.visibility ==
-                View.VISIBLE
-            ) {
+            if (list1.visibility == View.VISIBLE) {
 
                 list1.visibility = View.GONE
 
             } else {
 
-                list1.visibility =
-                    View.VISIBLE
+                list1.visibility = View.VISIBLE
 
                 autoHideList(list1)
             }
@@ -124,46 +101,59 @@ class DualPlayerActivity : AppCompatActivity() {
 
             list1.visibility = View.GONE
 
-            if (list2.visibility ==
-                View.VISIBLE
-            ) {
+            if (list2.visibility == View.VISIBLE) {
 
                 list2.visibility = View.GONE
 
             } else {
 
-                list2.visibility =
-                    View.VISIBLE
+                list2.visibility = View.VISIBLE
 
                 autoHideList(list2)
             }
         }
 
-        val url1 =
-            intent.getStringExtra("url1")
-
-        val url2 =
-            intent.getStringExtra("url2")
-
-        if (!url1.isNullOrEmpty()) {
-
-            playOnPlayer1(url1)
+        intent.getStringExtra("url1")?.let {
+            playOnPlayer1(it)
         }
 
-        if (!url2.isNullOrEmpty()) {
-
-            playOnPlayer2(url2)
+        intent.getStringExtra("url2")?.let {
+            playOnPlayer2(it)
         }
 
         loadLists()
     }
 
+    private fun updateOrientation() {
+
+        if (
+            resources.configuration.orientation ==
+            Configuration.ORIENTATION_LANDSCAPE
+        ) {
+
+            rootLayout.orientation =
+                LinearLayout.HORIZONTAL
+
+        } else {
+
+            rootLayout.orientation =
+                LinearLayout.VERTICAL
+        }
+    }
+
+    override fun onConfigurationChanged(
+        newConfig: Configuration
+    ) {
+
+        super.onConfigurationChanged(newConfig)
+
+        updateOrientation()
+    }
+
     private fun loadLists() {
 
         val names =
-            channels.map {
-                it.name
-            }
+            channels.map { it.name }
 
         list1.adapter =
             ArrayAdapter(

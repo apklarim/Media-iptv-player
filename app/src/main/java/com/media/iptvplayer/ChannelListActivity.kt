@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.media.iptvplayer.model.Channel
 
@@ -34,13 +35,9 @@ class ChannelListActivity : AppCompatActivity() {
         searchBox = findViewById(R.id.etSearch)
         groupContainer = findViewById(R.id.groupContainer)
 
-        // Kategori filtresini geçici olarak kaldırıyoruz
-        // Böylece uygulama kapanmayacak
-
         allChannels = ChannelRepository.channels.toMutableList()
 
         allChannels.forEach {
-
             it.isFavorite =
                 FavoriteManager.isFavorite(
                     this,
@@ -76,18 +73,32 @@ class ChannelListActivity : AppCompatActivity() {
             }
         )
 
+        // KANAL TIKLAMA TESTİ
+
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
-            startActivity(
+            val channel =
+                filteredChannels[position]
+
+            Toast.makeText(
+                this,
+                "Açılıyor: ${channel.name}",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            val intent =
                 Intent(
                     this,
                     PlayerActivity::class.java
-                ).putExtra(
-                    "url",
-                    filteredChannels[position].url
                 )
+
+            intent.putExtra(
+                "url",
+                channel.url
             )
+
+            startActivity(intent)
         }
     }
 
@@ -140,7 +151,12 @@ class ChannelListActivity : AppCompatActivity() {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
 
-            params.setMargins(8, 8, 8, 8)
+            params.setMargins(
+                8,
+                8,
+                8,
+                8
+            )
 
             tv.layoutParams = params
 
@@ -167,8 +183,12 @@ class ChannelListActivity : AppCompatActivity() {
 
                 val groupOk =
                     selectedGroup == "Tümü" ||
-                            (selectedGroup == "Favoriler"
-                                    && it.isFavorite) ||
+                            (
+                                    selectedGroup ==
+                                            "Favoriler"
+                                            &&
+                                            it.isFavorite
+                                    ) ||
                             it.group == selectedGroup
 
                 val searchOk =

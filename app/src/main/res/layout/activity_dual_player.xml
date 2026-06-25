@@ -5,55 +5,50 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#000000">
+    android:orientation="vertical">
 
-    <!-- PLAYER 1 -->
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
         <androidx.media3.ui.PlayerView
             android:id="@+id/playerView1"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:resize_mode="zoom"
+            android:layout_height="match_parent"
+            app:resize_mode="fill"
             app:use_controller="true"/>
 
         <ListView
             android:id="@+id/listChannels1"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="250dp"
+            android:layout_gravity="bottom"
             android:background="#CC10232B"
             android:visibility="gone"/>
-    </LinearLayout>
 
-    <!-- PLAYER 2 -->
+    </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
         <androidx.media3.ui.PlayerView
             android:id="@+id/playerView2"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:resize_mode="zoom"
+            android:layout_height="match_parent"
+            app:resize_mode="fill"
             app:use_controller="true"/>
 
         <ListView
             android:id="@+id/listChannels2"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="250dp"
+            android:layout_gravity="bottom"
             android:background="#CC10232B"
             android:visibility="gone"/>
-    </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

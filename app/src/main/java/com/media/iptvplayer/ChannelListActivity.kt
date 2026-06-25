@@ -7,8 +7,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.GridView
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +16,7 @@ import com.media.iptvplayer.model.Channel
 
 class ChannelListActivity : AppCompatActivity() {
 
-    private lateinit var listChannels: ListView
+    private lateinit var listChannels: GridView
     private lateinit var searchBox: EditText
     private lateinit var groupContainer: LinearLayout
 
@@ -31,9 +31,14 @@ class ChannelListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_channel_list)
 
-        listChannels = findViewById(R.id.listChannels)
-        searchBox = findViewById(R.id.etSearch)
-        groupContainer = findViewById(R.id.groupContainer)
+        listChannels =
+            findViewById(R.id.listChannels)
+
+        searchBox =
+            findViewById(R.id.etSearch)
+
+        groupContainer =
+            findViewById(R.id.groupContainer)
 
         // Kategori filtresi
 
@@ -48,7 +53,7 @@ class ChannelListActivity : AppCompatActivity() {
                 }
                 .toMutableList()
 
-        // Eğer kategori boş gelirse tüm kanalları göster
+        // Eğer kategori boş ise tüm kanalları göster
 
         if (allChannels.isEmpty()) {
 
@@ -139,7 +144,8 @@ class ChannelListActivity : AppCompatActivity() {
 
             allChannels.forEach {
 
-                if (it.name ==
+                if (
+                    it.name ==
                     filteredChannels[position].name
                 ) {
 
@@ -241,13 +247,14 @@ class ChannelListActivity : AppCompatActivity() {
 
                     selectedGroup == "Tümü" ||
 
-                    (
-                        selectedGroup == "Favoriler"
-                                &&
-                                it.isFavorite
-                    ) ||
+                            (
+                                    selectedGroup ==
+                                            "Favoriler"
+                                            &&
+                                            it.isFavorite
+                                    ) ||
 
-                    it.group == selectedGroup
+                            it.group == selectedGroup
 
                 val searchOk =
 

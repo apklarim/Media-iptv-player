@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="#000000">
 
-    <!-- SOL PLAYER -->
+    <!-- PLAYER 1 -->
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -21,20 +21,22 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:resize_mode="zoom"
             app:use_controller="true"/>
 
         <ListView
             android:id="@+id/listChannels1"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:background="#CC10232B"/>
+            android:background="#CC10232B"
+            android:visibility="gone"/>
     </LinearLayout>
 
-    <!-- SAĞ PLAYER -->
+    <!-- PLAYER 2 -->
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -43,13 +45,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:resize_mode="zoom"
             app:use_controller="true"/>
 
         <ListView
             android:id="@+id/listChannels2"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:background="#CC10232B"/>
+            android:background="#CC10232B"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </LinearLayout>

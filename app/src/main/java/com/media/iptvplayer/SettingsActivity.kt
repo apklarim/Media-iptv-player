@@ -27,6 +27,8 @@ class SettingsActivity : AppCompatActivity() {
             R.layout.activity_settings
         )
 
+        ThemeManager.applyTheme(this)
+
         btnAbout =
             findViewById(R.id.btnAbout)
 
@@ -48,8 +50,6 @@ class SettingsActivity : AppCompatActivity() {
         radioBlue =
             findViewById(R.id.radioBlue)
 
-        // Kayıtlı ayarları yükle
-
         switchAutoHide.isChecked =
             SettingsPreferences
                 .isAutoHideEnabled(this)
@@ -61,8 +61,6 @@ class SettingsActivity : AppCompatActivity() {
         switchLastChannel.isChecked =
             SettingsPreferences
                 .isAutoLoadLastChannelEnabled(this)
-
-        // Tema seçimini yükle
 
         when (
             ThemePreferences
@@ -79,14 +77,14 @@ class SettingsActivity : AppCompatActivity() {
                 radioBlue.isChecked = true
         }
 
-        // Tema seçimi
-
         radioDark.setOnClickListener {
 
             ThemePreferences.saveTheme(
                 this,
                 ThemePreferences.THEME_DARK
             )
+
+            recreate()
         }
 
         radioTurquoise.setOnClickListener {
@@ -95,6 +93,8 @@ class SettingsActivity : AppCompatActivity() {
                 this,
                 ThemePreferences.THEME_TURQUOISE
             )
+
+            recreate()
         }
 
         radioBlue.setOnClickListener {
@@ -103,9 +103,9 @@ class SettingsActivity : AppCompatActivity() {
                 this,
                 ThemePreferences.THEME_BLUE
             )
-        }
 
-        // Player butonlarını otomatik gizle
+            recreate()
+        }
 
         switchAutoHide
             .setOnCheckedChangeListener {
@@ -118,8 +118,6 @@ class SettingsActivity : AppCompatActivity() {
                     )
             }
 
-        // Son listeyi otomatik aç
-
         switchLastPlaylist
             .setOnCheckedChangeListener {
                     _, isChecked ->
@@ -130,8 +128,6 @@ class SettingsActivity : AppCompatActivity() {
                         isChecked
                     )
             }
-
-        // Son kanalı otomatik aç
 
         switchLastChannel
             .setOnCheckedChangeListener {

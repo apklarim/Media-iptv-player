@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class SplashActivity : AppCompatActivity() {
@@ -16,6 +18,21 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(
             R.layout.activity_splash
+        )
+
+        val imgLogo =
+            findViewById<ImageView>(
+                R.id.imgLogo
+            )
+
+        val animation =
+            AnimationUtils.loadAnimation(
+                this,
+                R.anim.logo_zoom
+            )
+
+        imgLogo.startAnimation(
+            animation
         )
 
         Handler(
@@ -31,6 +48,6 @@ class SplashActivity : AppCompatActivity() {
 
             finish()
 
-        }, 2000)
+        }, 2500)
     }
 }

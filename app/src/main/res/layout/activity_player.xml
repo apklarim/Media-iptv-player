@@ -13,7 +13,6 @@
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:resize_mode="zoom"
         app:show_timeout="3000"
         app:use_controller="true"/>
 
@@ -21,17 +20,15 @@
 
     <Button
         android:id="@+id/btnDual"
-        android:layout_width="90dp"
-        android:layout_height="55dp"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
         android:layout_gravity="top|end"
         android:layout_margin="16dp"
-        android:background="@drawable/focus_selector"
+        android:background="@drawable/player_button_background"
         android:text="2X"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textColor="#FFFFFF"/>
 
-    <!-- Kanal Değiştirme Butonları -->
+    <!-- Önceki / Sonraki -->
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -42,22 +39,20 @@
 
         <Button
             android:id="@+id/btnPrev"
-            android:layout_width="90dp"
-            android:layout_height="55dp"
-            android:background="@drawable/focus_selector"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:background="@drawable/player_button_background"
             android:text="◀"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"/>
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:id="@+id/btnNext"
-            android:layout_width="90dp"
-            android:layout_height="55dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
-            android:background="@drawable/focus_selector"
+            android:background="@drawable/player_button_background"
             android:text="▶"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"/>
+            android:textColor="#FFFFFF"/>
 
     </LinearLayout>
 
@@ -65,13 +60,14 @@
 
     <ListView
         android:id="@+id/listChannels"
-        android:layout_width="320dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="#EE07161D"
-        android:divider="#19C5D2"
+        android:background="#DD10232B"
+        android:choiceMode="singleChoice"
+        android:divider="#3300BCD4"
         android:dividerHeight="1dp"
-        android:padding="8dp"
+        android:listSelector="@drawable/channel_selector"
         android:visibility="gone"/>
 
 </FrameLayout>

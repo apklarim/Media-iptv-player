@@ -78,30 +78,8 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex < 0)
             currentIndex = 0
 
-        // IPTV Pro User-Agent
-
-        val userAgent =
-            "Mozilla/5.0 (Linux; Android 16; samsung SM-X110 Build/BP2A.250605.031.A3) IPTV Pro/9.1.18"
-
-        val httpDataSourceFactory =
-            DefaultHttpDataSource.Factory()
-                .setUserAgent(userAgent)
-                .setAllowCrossProtocolRedirects(true)
-                .setDefaultRequestProperties(
-                    mapOf(
-                        "User-Agent" to userAgent,
-                        "Accept" to "*/*",
-                        "Connection" to "keep-alive"
-                    )
-                )
-
         player =
             ExoPlayer.Builder(this)
-                .setMediaSourceFactory(
-                    DefaultMediaSourceFactory(
-                        httpDataSourceFactory
-                    )
-                )
                 .build()
 
         playerView.player = player
@@ -184,6 +162,51 @@ class PlayerActivity : AppCompatActivity() {
         PlayerPreferences.saveLastChannel(
             this,
             channel.url
+        )
+
+        // Kanalın kendi User-Agent bilgisini kullan
+
+        val ua =
+            if (channel.userAgent.isNotEmpty())
+                channel.userAgent
+            else
+                "Mozilla/5.0"
+
+        player.release()
+
+        val httpDataSourceFactory =
+            DefaultHttpDataSource.Factory()
+                .setUserAgent(ua)
+                .setAllowCrossProtocolRedirects(true)
+                .setDefaultRequestProperties(
+                    mapOf(
+                        "User-Agent" to ua,
+                        "Accept" to "*/*",
+                        "Connection" to "keep-alive"
+                    )
+                )
+
+        player =
+            ExoPlayer.Builder(this)
+                .setMediaSourceFactory(
+                    DefaultMediaSourceFactory(
+                        httpDataSourceFactory
+                    )
+                )
+                .build()
+
+        playerView.player = player
+
+        player.addListener(
+            object : Player.Listener {
+
+                override fun onPlayerError(
+                    error: PlaybackException
+                ) {
+
+                    error.printStackTrace()
+                }
+            }
         )
 
         val mediaItem =
@@ -318,8 +341,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         return super.onKeyDown(
-            keyCode,
-            event
+            keyCode, event
         )
     }
 

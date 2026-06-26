@@ -22,6 +22,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.media.iptvplayer.model.Channel
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -36,8 +37,9 @@ class PlayerActivity : AppCompatActivity() {
     private val hideHandler =
         Handler(Looper.getMainLooper())
 
-    private var channels =
-        ChannelRepository.channels
+    // ÖNEMLİ: Her zaman güncel listeyi al
+    private val channels: MutableList<Channel>
+        get() = ChannelRepository.channels
 
     private var currentIndex = 0
 
@@ -90,7 +92,6 @@ class PlayerActivity : AppCompatActivity() {
                 override fun onPlayerError(
                     error: PlaybackException
                 ) {
-
                     error.printStackTrace()
                 }
             }
@@ -115,8 +116,12 @@ class PlayerActivity : AppCompatActivity() {
 
         btnDual.setOnClickListener {
 
-            if (channels.size < 2)
+            if (channels.isEmpty())
                 return@setOnClickListener
+
+            // Güncel kanal listesini 2X Player'a aktar
+            ChannelRepository.channels =
+                channels.toMutableList()
 
             val secondIndex =
                 if (currentIndex + 1 < channels.size)
@@ -164,8 +169,6 @@ class PlayerActivity : AppCompatActivity() {
             channel.url
         )
 
-        // Kanalın kendi User-Agent bilgisini kullan
-
         val ua =
             if (channel.userAgent.isNotEmpty())
                 channel.userAgent
@@ -197,18 +200,6 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
-        player.addListener(
-            object : Player.Listener {
-
-                override fun onPlayerError(
-                    error: PlaybackException
-                ) {
-
-                    error.printStackTrace()
-                }
-            }
-        )
-
         val mediaItem =
             MediaItem.fromUri(
                 Uri.parse(
@@ -217,9 +208,7 @@ class PlayerActivity : AppCompatActivity() {
             )
 
         player.setMediaItem(mediaItem)
-
         player.prepare()
-
         player.playWhenReady = true
     }
 
@@ -293,8 +282,7 @@ class PlayerActivity : AppCompatActivity() {
         ) {
 
             val params =
-                PictureInPictureParams
-                    .Builder()
+                PictureInPictureParams.Builder()
                     .setAspectRatio(
                         Rational(16, 9)
                     )
@@ -314,13 +302,11 @@ class PlayerActivity : AppCompatActivity() {
         when (keyCode) {
 
             KeyEvent.KEYCODE_DPAD_UP -> {
-
                 previousChannel()
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
-
                 nextChannel()
                 return true
             }
@@ -341,7 +327,8 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         return super.onKeyDown(
-            keyCode, event
+            keyCode,
+            event
         )
     }
 

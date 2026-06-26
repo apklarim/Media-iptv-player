@@ -12,5 +12,9 @@ data class Channel(
 
     val category: String = "LIVE",
 
+    val userAgent: String = "",
+
+    val referer: String = "",
+
     var isFavorite: Boolean = false
 )

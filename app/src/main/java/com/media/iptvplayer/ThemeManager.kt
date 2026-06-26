@@ -19,19 +19,25 @@ object ThemeManager {
             ThemePreferences.getTheme(activity)
         ) {
 
+            // Turkuaz Tema
+
             ThemePreferences.THEME_TURQUOISE -> {
 
                 rootView.setBackgroundColor(
-                    Color.parseColor("#071D1E")
+                    Color.parseColor("#004D40")
                 )
             }
+
+            // Mavi Tema
 
             ThemePreferences.THEME_BLUE -> {
 
                 rootView.setBackgroundColor(
-                    Color.parseColor("#08192F")
+                    Color.parseColor("#0D47A1")
                 )
             }
+
+            // Koyu Tema
 
             else -> {
 
@@ -70,10 +76,10 @@ object ThemeManager {
         ) {
 
             ThemePreferences.THEME_TURQUOISE ->
-                Color.parseColor("#10232B")
+                Color.parseColor("#00695C")
 
             ThemePreferences.THEME_BLUE ->
-                Color.parseColor("#12203A")
+                Color.parseColor("#1565C0")
 
             else ->
                 Color.parseColor("#222222")

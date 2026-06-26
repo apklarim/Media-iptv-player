@@ -2,6 +2,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- İnternet erişimi -->
+
     <uses-permission
         android:name="android.permission.INTERNET"/>
 
@@ -10,9 +12,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_media_logo"
+        android:roundIcon="@drawable/ic_media_logo"
         android:label="Media IPTV Player"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 

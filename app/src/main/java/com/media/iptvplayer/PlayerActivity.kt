@@ -1,13 +1,10 @@
 package com.media.iptvplayer
 
-import android.app.PictureInPictureParams
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Rational
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ArrayAdapter
@@ -37,7 +34,6 @@ class PlayerActivity : AppCompatActivity() {
     private val hideHandler =
         Handler(Looper.getMainLooper())
 
-    // Her zaman güncel kanal listesini al
     private val channels: List<Channel>
         get() = ChannelRepository.channels
 
@@ -61,8 +57,7 @@ class PlayerActivity : AppCompatActivity() {
         var url = intent.getStringExtra("url")
 
         if (SettingsPreferences
-                .isAutoLoadLastChannelEnabled(this)
-        ) {
+                .isAutoLoadLastChannelEnabled(this)) {
 
             val lastChannelUrl =
                 PlayerPreferences.getLastChannel(this)
@@ -92,7 +87,6 @@ class PlayerActivity : AppCompatActivity() {
                 override fun onPlayerError(
                     error: PlaybackException
                 ) {
-
                     error.printStackTrace()
                 }
             }
@@ -120,7 +114,6 @@ class PlayerActivity : AppCompatActivity() {
             if (channels.isEmpty())
                 return@setOnClickListener
 
-            // Güncel kanal listesini 2X Player'a aktar
             ChannelRepository.setChannels(channels)
 
             val secondIndex =
@@ -200,29 +193,13 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
-        player.addListener(
-            object : Player.Listener {
-
-                override fun onPlayerError(
-                    error: PlaybackException
-                ) {
-
-                    error.printStackTrace()
-                }
-            }
-        )
-
         val mediaItem =
             MediaItem.fromUri(
-                Uri.parse(
-                    channel.url.trim()
-                )
+                Uri.parse(channel.url.trim())
             )
 
         player.setMediaItem(mediaItem)
-
         player.prepare()
-
         player.playWhenReady = true
     }
 
@@ -231,7 +208,6 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex > 0) {
 
             currentIndex--
-
             playChannel(currentIndex)
         }
     }
@@ -241,7 +217,6 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex < channels.size - 1) {
 
             currentIndex++
-
             playChannel(currentIndex)
         }
     }
@@ -259,9 +234,7 @@ class PlayerActivity : AppCompatActivity() {
                 _, _, position, _ ->
 
             playChannel(position)
-
             channelList.visibility = View.GONE
-
             showControlsTemporarily()
         }
     }
@@ -273,8 +246,8 @@ class PlayerActivity : AppCompatActivity() {
         btnDual.visibility = View.VISIBLE
 
         if (!SettingsPreferences
-                .isAutoHideEnabled(this)
-        ) return
+                .isAutoHideEnabled(this))
+            return
 
         hideHandler.removeCallbacksAndMessages(null)
 
@@ -287,26 +260,6 @@ class PlayerActivity : AppCompatActivity() {
         }, 4000)
     }
 
-    override fun onUserLeaveHint() {
-
-        super.onUserLeaveHint()
-
-        if (Build.VERSION.SDK_INT >=
-            Build.VERSION_CODES.O
-        ) {
-
-            val params =
-                PictureInPictureParams
-                    .Builder()
-                    .setAspectRatio(
-                        Rational(16, 9)
-                    )
-                    .build()
-
-            enterPictureInPictureMode(params)
-        }
-    }
-
     override fun onKeyDown(
         keyCode: Int,
         event: KeyEvent?
@@ -317,13 +270,11 @@ class PlayerActivity : AppCompatActivity() {
         when (keyCode) {
 
             KeyEvent.KEYCODE_DPAD_UP -> {
-
                 previousChannel()
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
-
                 nextChannel()
                 return true
             }
@@ -333,8 +284,7 @@ class PlayerActivity : AppCompatActivity() {
 
                 channelList.visibility =
                     if (channelList.visibility ==
-                        View.VISIBLE
-                    )
+                        View.VISIBLE)
                         View.GONE
                     else
                         View.VISIBLE

@@ -9,6 +9,12 @@ object ChannelRepository {
     fun setChannels(list: List<Channel>) {
 
         channels.clear()
+
         channels.addAll(list)
+    }
+
+    fun clear() {
+
+        channels.clear()
     }
 }

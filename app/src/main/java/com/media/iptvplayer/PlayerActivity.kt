@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -23,7 +22,6 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var player: ExoPlayer
     private lateinit var playerView: PlayerView
     private lateinit var channelList: ListView
-    private lateinit var txtChannelName: TextView
 
     private var channels =
         ChannelRepository.channels
@@ -48,11 +46,6 @@ class PlayerActivity : AppCompatActivity() {
         channelList =
             findViewById(
                 R.id.listChannels
-            )
-
-        txtChannelName =
-            findViewById(
-                R.id.txtChannelName
             )
 
         val btnPrev =
@@ -153,9 +146,6 @@ class PlayerActivity : AppCompatActivity() {
         val channel =
             channels[index]
 
-        txtChannelName.text =
-            channel.name
-
         PlayerPreferences
             .saveLastChannel(
                 this,
@@ -234,15 +224,14 @@ class PlayerActivity : AppCompatActivity() {
                 }
             )
 
-        channelList
-            .setOnItemClickListener {
-                    _, _, position, _ ->
+        channelList.setOnItemClickListener {
+                _, _, position, _ ->
 
-                playChannel(position)
+            playChannel(position)
 
-                channelList.visibility =
-                    View.GONE
-            }
+            channelList.visibility =
+                View.GONE
+        }
     }
 
     override fun onKeyDown(

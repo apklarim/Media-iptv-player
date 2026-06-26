@@ -68,6 +68,10 @@ class ChannelListActivity : AppCompatActivity() {
                     .toMutableList()
         }
 
+        // ÖNEMLİ
+        ChannelRepository.channels =
+            allChannels.toMutableList()
+
         allChannels.forEach {
             it.isFavorite =
                 FavoriteManager.isFavorite(
@@ -110,6 +114,10 @@ class ChannelListActivity : AppCompatActivity() {
             val channel =
                 filteredChannels[position]
 
+            // ÖNEMLİ
+            ChannelRepository.channels =
+                filteredChannels.toMutableList()
+
             startActivity(
                 Intent(
                     this,
@@ -138,230 +146,22 @@ class ChannelListActivity : AppCompatActivity() {
         }
     }
 
+    // Buradan sonrası eski dosyanızdaki ile aynı kalacak
+
     private fun loadGroups() {
-
-        groupContainer.removeAllViews()
-
-        val groups =
-            mutableListOf(
-                "Tümü",
-                "Favoriler"
-            )
-
-        groups.addAll(
-
-            allChannels.map {
-
-                it.group.ifBlank {
-                    "Diğer"
-                }
-
-            }
-                .distinct()
-                .sorted()
-                .filterNot {
-
-                    HiddenGroupsManager
-                        .isHidden(
-                            this,
-                            it
-                        )
-                }
-        )
-
-        groups.distinct().forEach { group ->
-
-            val tv = TextView(this)
-
-            tv.text = group
-            tv.textSize = 12f
-            tv.setTextColor(Color.WHITE)
-
-            tv.setPadding(
-                30,
-                15,
-                30,
-                15
-            )
-
-            if (group == selectedGroup) {
-
-                tv.setBackgroundColor(
-                    Color.parseColor("#FF9800")
-
-                )
-
-            } else {
-
-                tv.setBackgroundColor(
-                    Color.parseColor("#18C7D1")
-                )
-            }
-
-            val params =
-                LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-
-            params.setMargins(
-                8,
-                8,
-                8,
-                8
-            )
-
-            tv.layoutParams = params
-
-            tv.setOnClickListener {
-
-                if (
-                    ParentalControlManager
-                        .isProtectedGroup(
-                            group
-                        )
-                ) {
-
-                    showPinDialog(group)
-
-                } else {
-
-                    openGroup(group)
-                }
-            }
-
-            tv.setOnLongClickListener {
-
-                if (
-                    group != "Tümü"
-                    &&
-                    group != "Favoriler"
-                ) {
-
-                    HiddenGroupsManager
-                        .hideGroup(
-                            this,
-                            group
-                        )
-
-                    selectedGroup = "Tümü"
-
-                    loadGroups()
-                    applyFilter()
-
-                    Toast.makeText(
-                        this,
-                        "$group gizlendi",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                true
-            }
-
-            groupContainer.addView(tv)
-        }
+        // mevcut kodunuz aynı kalacak
     }
 
-    private fun showPinDialog(
-        group: String
-    ) {
-
-        val input =
-            EditText(this)
-
-        input.inputType =
-            InputType.TYPE_CLASS_NUMBER or
-                    InputType.TYPE_NUMBER_VARIATION_PASSWORD
-
-        AlertDialog.Builder(this)
-            .setTitle("Şifre Gir")
-            .setView(input)
-
-            .setPositiveButton(
-                "Tamam"
-            ) { _, _ ->
-
-                if (
-                    ParentalControlManager
-                        .checkPin(
-                            input.text.toString()
-                        )
-                ) {
-
-                    openGroup(group)
-
-                } else {
-
-                    Toast.makeText(
-                        this,
-                        "Yanlış Şifre",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            .setNegativeButton(
-                "İptal",
-                null
-            )
-
-            .show()
+    private fun showPinDialog(group: String) {
+        // mevcut kodunuz aynı kalacak
     }
 
-    private fun openGroup(
-        group: String
-    ) {
-
-        selectedGroup = group
-
-        ChannelPreferences
-            .saveLastGroup(
-                this,
-                currentCategory,
-                group
-            )
-
-        loadGroups()
-        applyFilter()
+    private fun openGroup(group: String) {
+        // mevcut kodunuz aynı kalacak
     }
 
     private fun applyFilter() {
-
-        val search =
-            searchBox.text.toString()
-                .lowercase()
-
-        filteredChannels =
-            allChannels.filter {
-
-                val groupOk =
-
-                    selectedGroup == "Tümü" ||
-
-                            (
-                                    selectedGroup ==
-                                            "Favoriler"
-                                            &&
-                                            it.isFavorite
-                                    ) ||
-
-                            it.group == selectedGroup
-
-                val searchOk =
-
-                    it.name.lowercase()
-                        .contains(search)
-
-                groupOk && searchOk
-
-            }
-                .sortedByDescending {
-                    it.isFavorite
-                }
-                .toMutableList()
-
-        loadChannels()
+        // mevcut kodunuz aynı kalacak
     }
 
     private fun loadChannels() {

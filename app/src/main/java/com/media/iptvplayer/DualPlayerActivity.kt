@@ -28,8 +28,7 @@ class DualPlayerActivity : AppCompatActivity() {
 
     private lateinit var rootLayout: LinearLayout
 
-    private val channels
-        get() = ChannelRepository.channels
+    private var channels = mutableListOf<com.media.iptvplayer.model.Channel>()
 
     private val handler =
         Handler(Looper.getMainLooper())
@@ -39,9 +38,7 @@ class DualPlayerActivity : AppCompatActivity() {
 
     private var selectedPlayer = 1
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
@@ -63,6 +60,9 @@ class DualPlayerActivity : AppCompatActivity() {
 
         list2 =
             findViewById(R.id.listChannels2)
+
+        channels =
+            ChannelRepository.channels.toMutableList()
 
         updateOrientation()
 

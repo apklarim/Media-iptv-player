@@ -1,222 +1,369 @@
 package com.media.iptvplayer
 
-import android.content.res.Configuration
+import android.app.PictureInPictureParams
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Rational
+import android.view.KeyEvent
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.LinearLayout
+import android.widget.Button
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.media.iptvplayer.model.Channel
 
-class DualPlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var player1: ExoPlayer
-    private lateinit var player2: ExoPlayer
+    private lateinit var player: ExoPlayer
+    private lateinit var playerView: PlayerView
+    private lateinit var channelList: ListView
 
-    private lateinit var playerView1: PlayerView
-    private lateinit var playerView2: PlayerView
+    private lateinit var btnPrev: Button
+    private lateinit var btnNext: Button
+    private lateinit var btnDual: Button
 
-    private lateinit var list1: ListView
-    private lateinit var list2: ListView
+    private val hideHandler =
+        Handler(Looper.getMainLooper())
 
-    private lateinit var rootLayout: LinearLayout
+    private val channels: List<Channel>
+        get() = ChannelRepository.channels
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var currentIndex = 0
 
-    private var currentUrl1 = ""
-    private var currentUrl2 = ""
-
-    // Güncel kanalları Activity açılırken kopyala
-    private val channels = ArrayList(
-        ChannelRepository.channels
-    )
+    private var openingDualPlayer = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_dual_player)
+        setContentView(R.layout.activity_player)
 
-        rootLayout = findViewById(R.id.rootLayout)
+        ThemeManager.applyTheme(this)
 
-        playerView1 = findViewById(R.id.playerView1)
-        playerView2 = findViewById(R.id.playerView2)
+        playerView = findViewById(R.id.playerView)
+        channelList = findViewById(R.id.listChannels)
 
-        list1 = findViewById(R.id.listChannels1)
-        list2 = findViewById(R.id.listChannels2)
+        btnPrev = findViewById(R.id.btnPrev)
+        btnNext = findViewById(R.id.btnNext)
+        btnDual = findViewById(R.id.btnDual)
 
-        updateOrientation()
+        var url = intent.getStringExtra("url")
 
-        playerView1.resizeMode =
-            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-
-        playerView2.resizeMode =
-            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-
-        player1 = ExoPlayer.Builder(this).build()
-        player2 = ExoPlayer.Builder(this).build()
-
-        playerView1.player = player1
-        playerView2.player = player2
-
-        currentUrl1 =
-            intent.getStringExtra("url1") ?: ""
-
-        currentUrl2 =
-            intent.getStringExtra("url2") ?: ""
-
-        if (currentUrl1.isNotEmpty())
-            playOnPlayer1(currentUrl1)
-
-        if (currentUrl2.isNotEmpty())
-            playOnPlayer2(currentUrl2)
-
-        // DEBUG
-        Toast.makeText(
-            this,
-            "2X Kanal Sayısı: ${channels.size}",
-            Toast.LENGTH_LONG
-        ).show()
-
-        val names =
-            channels.map { it.name }
-
-        list1.adapter =
-            ArrayAdapter(
-                this,
-                R.layout.item_dual_channel,
-                names
-            )
-
-        list2.adapter =
-            ArrayAdapter(
-                this,
-                R.layout.item_dual_channel,
-                names
-            )
-
-        list1.setOnItemClickListener {
-                _, _, position, _ ->
-
-            if (position < channels.size) {
-
-                currentUrl1 =
-                    channels[position].url
-
-                playOnPlayer1(currentUrl1)
-
-                handler.postDelayed({
-                    list1.visibility = View.GONE
-                }, 2000)
-            }
-        }
-
-        list2.setOnItemClickListener {
-                _, _, position, _ ->
-
-            if (position < channels.size) {
-
-                currentUrl2 =
-                    channels[position].url
-
-                playOnPlayer2(currentUrl2)
-
-                handler.postDelayed({
-                    list2.visibility = View.GONE
-                }, 2000)
-            }
-        }
-
-        playerView1.setOnClickListener {
-
-            list2.visibility = View.GONE
-
-            list1.visibility =
-                if (list1.visibility == View.VISIBLE)
-                    View.GONE
-                else
-                    View.VISIBLE
-        }
-
-        playerView2.setOnClickListener {
-
-            list1.visibility = View.GONE
-
-            list2.visibility =
-                if (list2.visibility == View.VISIBLE)
-                    View.GONE
-                else
-                    View.VISIBLE
-        }
-    }
-
-    private fun updateOrientation() {
-
-        if (
-            resources.configuration.orientation ==
-            Configuration.ORIENTATION_LANDSCAPE
+        if (SettingsPreferences
+                .isAutoLoadLastChannelEnabled(this)
         ) {
 
-            rootLayout.orientation =
-                LinearLayout.HORIZONTAL
+            val lastChannelUrl =
+                PlayerPreferences.getLastChannel(this)
 
-        } else {
+            if (!lastChannelUrl.isNullOrEmpty()) {
+                url = lastChannelUrl
+            }
+        }
 
-            rootLayout.orientation =
-                LinearLayout.VERTICAL
+        currentIndex =
+            channels.indexOfFirst {
+                it.url == url
+            }
+
+        if (currentIndex < 0)
+            currentIndex = 0
+
+        player =
+            ExoPlayer.Builder(this)
+                .build()
+
+        playerView.player = player
+
+        player.addListener(
+            object : Player.Listener {
+
+                override fun onPlayerError(
+                    error: PlaybackException
+                ) {
+
+                    error.printStackTrace()
+                }
+            }
+        )
+
+        playerView.resizeMode =
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+
+        playChannel(currentIndex)
+
+        btnPrev.setOnClickListener {
+
+            previousChannel()
+            showControlsTemporarily()
+        }
+
+        btnNext.setOnClickListener {
+
+            nextChannel()
+            showControlsTemporarily()
+        }
+
+        btnDual.setOnClickListener {
+
+            openingDualPlayer = true
+
+            if (channels.isEmpty())
+                return@setOnClickListener
+
+            ChannelRepository.setChannels(channels)
+
+            val secondIndex =
+                if (currentIndex + 1 < channels.size)
+                    currentIndex + 1
+                else
+                    0
+
+            startActivity(
+                Intent(
+                    this,
+                    DualPlayerActivity::class.java
+                )
+                    .putExtra(
+                        "url1",
+                        channels[currentIndex].url
+                    )
+                    .putExtra(
+                        "url2",
+                        channels[secondIndex].url
+                    )
+            )
+        }
+
+        playerView.setOnClickListener {
+
+            showControlsTemporarily()
+        }
+
+        loadChannelList()
+
+        showControlsTemporarily()
+    }
+
+    private fun playChannel(index: Int) {
+
+        if (index < 0 || index >= channels.size)
+            return
+
+        currentIndex = index
+
+        val channel = channels[index]
+
+        PlayerPreferences.saveLastChannel(
+            this,
+            channel.url
+        )
+
+        val ua =
+            if (channel.userAgent.isNotEmpty())
+                channel.userAgent
+            else
+                "Mozilla/5.0"
+
+        player.release()
+
+        val httpDataSourceFactory =
+            DefaultHttpDataSource.Factory()
+                .setUserAgent(ua)
+                .setAllowCrossProtocolRedirects(true)
+                .setDefaultRequestProperties(
+                    mapOf(
+                        "User-Agent" to ua,
+                        "Accept" to "*/*",
+                        "Connection" to "keep-alive"
+                    )
+                )
+
+        player =
+            ExoPlayer.Builder(this)
+                .setMediaSourceFactory(
+                    DefaultMediaSourceFactory(
+                        httpDataSourceFactory
+                    )
+                )
+                .build()
+
+        playerView.player = player
+
+        player.addListener(
+            object : Player.Listener {
+
+                override fun onPlayerError(
+                    error: PlaybackException
+                ) {
+
+                    error.printStackTrace()
+                }
+            }
+        )
+
+        val mediaItem =
+            MediaItem.fromUri(
+                Uri.parse(
+                    channel.url.trim()
+                )
+            )
+
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.playWhenReady = true
+    }
+
+    private fun previousChannel() {
+
+        if (currentIndex > 0) {
+
+            currentIndex--
+            playChannel(currentIndex)
         }
     }
 
-    override fun onConfigurationChanged(
-        newConfig: Configuration
-    ) {
+    private fun nextChannel() {
 
-        super.onConfigurationChanged(newConfig)
+        if (currentIndex < channels.size - 1) {
 
-        updateOrientation()
+            currentIndex++
+            playChannel(currentIndex)
+        }
     }
 
-    private fun playOnPlayer1(url: String) {
+    private fun loadChannelList() {
 
-        player1.stop()
-
-        player1.setMediaItem(
-            MediaItem.fromUri(
-                Uri.parse(url)
+        channelList.adapter =
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                channels.map { it.name }
             )
-        )
 
-        player1.prepare()
-        player1.playWhenReady = true
+        channelList.setOnItemClickListener {
+                _, _, position, _ ->
+
+            playChannel(position)
+
+            channelList.visibility = View.GONE
+
+            showControlsTemporarily()
+        }
     }
 
-    private fun playOnPlayer2(url: String) {
+    private fun showControlsTemporarily() {
 
-        player2.stop()
+        btnPrev.visibility = View.VISIBLE
+        btnNext.visibility = View.VISIBLE
+        btnDual.visibility = View.VISIBLE
 
-        player2.setMediaItem(
-            MediaItem.fromUri(
-                Uri.parse(url)
-            )
+        if (!SettingsPreferences
+                .isAutoHideEnabled(this)
+        ) return
+
+        hideHandler.removeCallbacksAndMessages(null)
+
+        hideHandler.postDelayed({
+
+            btnPrev.visibility = View.GONE
+            btnNext.visibility = View.GONE
+            btnDual.visibility = View.GONE
+
+        }, 4000)
+    }
+
+    override fun onUserLeaveHint() {
+
+        super.onUserLeaveHint()
+
+        if (openingDualPlayer)
+            return
+
+        if (Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.O
+        ) {
+
+            val params =
+                PictureInPictureParams.Builder()
+                    .setAspectRatio(
+                        Rational(16, 9)
+                    )
+                    .build()
+
+            enterPictureInPictureMode(params)
+        }
+    }
+
+    override fun onResume() {
+
+        super.onResume()
+
+        openingDualPlayer = false
+    }
+
+    override fun onKeyDown(
+        keyCode: Int,
+        event: KeyEvent?
+    ): Boolean {
+
+        showControlsTemporarily()
+
+        when (keyCode) {
+
+            KeyEvent.KEYCODE_DPAD_UP -> {
+
+                previousChannel()
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+
+                nextChannel()
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_CENTER,
+            KeyEvent.KEYCODE_ENTER -> {
+
+                channelList.visibility =
+                    if (channelList.visibility ==
+                        View.VISIBLE
+                    )
+                        View.GONE
+                    else
+                        View.VISIBLE
+
+                return true
+            }
+        }
+
+        return super.onKeyDown(
+            keyCode,
+            event
         )
-
-        player2.prepare()
-        player2.playWhenReady = true
     }
 
     override fun onDestroy() {
 
-        super.onDestroy()
+        hideHandler.removeCallbacksAndMessages(null)
 
-        player1.release()
-        player2.release()
+        if (::player.isInitialized) {
+            player.release()
+        }
+
+        super.onDestroy()
     }
 }

@@ -248,9 +248,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                ChannelRepository.channels =
+                ChannelRepository.setChannels(
                     M3uParser.parse(content)
-                        .toMutableList()
+                )
 
             } catch (e: Exception) {
 

@@ -1,6 +1,5 @@
 package com.media.iptvplayer
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -29,7 +28,6 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var btnPrev: Button
     private lateinit var btnNext: Button
-    private lateinit var btnDual: Button
 
     private val hideHandler =
         Handler(Looper.getMainLooper())
@@ -52,7 +50,6 @@ class PlayerActivity : AppCompatActivity() {
 
         btnPrev = findViewById(R.id.btnPrev)
         btnNext = findViewById(R.id.btnNext)
-        btnDual = findViewById(R.id.btnDual)
 
         var url = intent.getStringExtra("url")
 
@@ -107,35 +104,6 @@ class PlayerActivity : AppCompatActivity() {
 
             nextChannel()
             showControlsTemporarily()
-        }
-
-        btnDual.setOnClickListener {
-
-            if (channels.isEmpty())
-                return@setOnClickListener
-
-            ChannelRepository.setChannels(channels)
-
-            val secondIndex =
-                if (currentIndex + 1 < channels.size)
-                    currentIndex + 1
-                else
-                    0
-
-            startActivity(
-                Intent(
-                    this,
-                    DualPlayerActivity::class.java
-                )
-                    .putExtra(
-                        "url1",
-                        channels[currentIndex].url
-                    )
-                    .putExtra(
-                        "url2",
-                        channels[secondIndex].url
-                    )
-            )
         }
 
         playerView.setOnClickListener {
@@ -193,9 +161,22 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
+        player.addListener(
+            object : Player.Listener {
+
+                override fun onPlayerError(
+                    error: PlaybackException
+                ) {
+                    error.printStackTrace()
+                }
+            }
+        )
+
         val mediaItem =
             MediaItem.fromUri(
-                Uri.parse(channel.url.trim())
+                Uri.parse(
+                    channel.url.trim()
+                )
             )
 
         player.setMediaItem(mediaItem)
@@ -234,7 +215,9 @@ class PlayerActivity : AppCompatActivity() {
                 _, _, position, _ ->
 
             playChannel(position)
+
             channelList.visibility = View.GONE
+
             showControlsTemporarily()
         }
     }
@@ -243,7 +226,6 @@ class PlayerActivity : AppCompatActivity() {
 
         btnPrev.visibility = View.VISIBLE
         btnNext.visibility = View.VISIBLE
-        btnDual.visibility = View.VISIBLE
 
         if (!SettingsPreferences
                 .isAutoHideEnabled(this))
@@ -255,7 +237,6 @@ class PlayerActivity : AppCompatActivity() {
 
             btnPrev.visibility = View.GONE
             btnNext.visibility = View.GONE
-            btnDual.visibility = View.GONE
 
         }, 4000)
     }
@@ -270,11 +251,13 @@ class PlayerActivity : AppCompatActivity() {
         when (keyCode) {
 
             KeyEvent.KEYCODE_DPAD_UP -> {
+
                 previousChannel()
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
+
                 nextChannel()
                 return true
             }

@@ -1,6 +1,7 @@
 package com.media.iptvplayer
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.RadioButton
@@ -50,6 +51,8 @@ class SettingsActivity : AppCompatActivity() {
         radioBlue =
             findViewById(R.id.radioBlue)
 
+        // Kayıtlı ayarları yükle
+
         switchAutoHide.isChecked =
             SettingsPreferences
                 .isAutoHideEnabled(this)
@@ -61,6 +64,8 @@ class SettingsActivity : AppCompatActivity() {
         switchLastChannel.isChecked =
             SettingsPreferences
                 .isAutoLoadLastChannelEnabled(this)
+
+        // Tema seçimini yükle
 
         when (
             ThemePreferences
@@ -77,6 +82,8 @@ class SettingsActivity : AppCompatActivity() {
                 radioBlue.isChecked = true
         }
 
+        // Tema seçimi
+
         radioDark.setOnClickListener {
 
             ThemePreferences.saveTheme(
@@ -84,7 +91,7 @@ class SettingsActivity : AppCompatActivity() {
                 ThemePreferences.THEME_DARK
             )
 
-            recreate()
+            restartApp()
         }
 
         radioTurquoise.setOnClickListener {
@@ -94,7 +101,7 @@ class SettingsActivity : AppCompatActivity() {
                 ThemePreferences.THEME_TURQUOISE
             )
 
-            recreate()
+            restartApp()
         }
 
         radioBlue.setOnClickListener {
@@ -104,8 +111,10 @@ class SettingsActivity : AppCompatActivity() {
                 ThemePreferences.THEME_BLUE
             )
 
-            recreate()
+            restartApp()
         }
+
+        // Player butonlarını otomatik gizle
 
         switchAutoHide
             .setOnCheckedChangeListener {
@@ -118,6 +127,8 @@ class SettingsActivity : AppCompatActivity() {
                     )
             }
 
+        // Son listeyi otomatik aç
+
         switchLastPlaylist
             .setOnCheckedChangeListener {
                     _, isChecked ->
@@ -128,6 +139,8 @@ class SettingsActivity : AppCompatActivity() {
                         isChecked
                     )
             }
+
+        // Son kanalı otomatik aç
 
         switchLastChannel
             .setOnCheckedChangeListener {
@@ -165,5 +178,23 @@ gelişmiş IPTV oynatıcı.
                 )
                 .show()
         }
+    }
+
+    private fun restartApp() {
+
+        val intent =
+            packageManager
+                .getLaunchIntentForPackage(
+                    packageName
+                )
+
+        intent?.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+        )
+
+        startActivity(intent)
+
+        finishAffinity()
     }
 }

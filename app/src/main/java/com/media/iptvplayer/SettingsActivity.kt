@@ -3,6 +3,7 @@ package com.media.iptvplayer
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
+import android.widget.RadioButton
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 
@@ -14,6 +15,10 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var switchLastPlaylist: Switch
     private lateinit var switchLastChannel: Switch
 
+    private lateinit var radioDark: RadioButton
+    private lateinit var radioTurquoise: RadioButton
+    private lateinit var radioBlue: RadioButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -23,24 +28,25 @@ class SettingsActivity : AppCompatActivity() {
         )
 
         btnAbout =
-            findViewById(
-                R.id.btnAbout
-            )
+            findViewById(R.id.btnAbout)
 
         switchAutoHide =
-            findViewById(
-                R.id.switchAutoHide
-            )
+            findViewById(R.id.switchAutoHide)
 
         switchLastPlaylist =
-            findViewById(
-                R.id.switchLastPlaylist
-            )
+            findViewById(R.id.switchLastPlaylist)
 
         switchLastChannel =
-            findViewById(
-                R.id.switchLastChannel
-            )
+            findViewById(R.id.switchLastChannel)
+
+        radioDark =
+            findViewById(R.id.radioDark)
+
+        radioTurquoise =
+            findViewById(R.id.radioTurquoise)
+
+        radioBlue =
+            findViewById(R.id.radioBlue)
 
         // Kayıtlı ayarları yükle
 
@@ -55,6 +61,49 @@ class SettingsActivity : AppCompatActivity() {
         switchLastChannel.isChecked =
             SettingsPreferences
                 .isAutoLoadLastChannelEnabled(this)
+
+        // Tema seçimini yükle
+
+        when (
+            ThemePreferences
+                .getTheme(this)
+        ) {
+
+            ThemePreferences.THEME_DARK ->
+                radioDark.isChecked = true
+
+            ThemePreferences.THEME_TURQUOISE ->
+                radioTurquoise.isChecked = true
+
+            ThemePreferences.THEME_BLUE ->
+                radioBlue.isChecked = true
+        }
+
+        // Tema seçimi
+
+        radioDark.setOnClickListener {
+
+            ThemePreferences.saveTheme(
+                this,
+                ThemePreferences.THEME_DARK
+            )
+        }
+
+        radioTurquoise.setOnClickListener {
+
+            ThemePreferences.saveTheme(
+                this,
+                ThemePreferences.THEME_TURQUOISE
+            )
+        }
+
+        radioBlue.setOnClickListener {
+
+            ThemePreferences.saveTheme(
+                this,
+                ThemePreferences.THEME_BLUE
+            )
+        }
 
         // Player butonlarını otomatik gizle
 

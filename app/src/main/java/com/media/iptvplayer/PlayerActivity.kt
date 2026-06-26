@@ -1,7 +1,6 @@
 package com.media.iptvplayer
 
 import android.app.PictureInPictureParams
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -83,8 +82,6 @@ class PlayerActivity : AppCompatActivity() {
                 "url"
             )
 
-        // Son kanal ayarı
-
         if (
             SettingsPreferences
                 .isAutoLoadLastChannelEnabled(this)
@@ -130,7 +127,7 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
-        // ExoPlayer hata verirse VLC aç
+        // Sadece hata kaydı tut
 
         player.addListener(
 
@@ -140,19 +137,7 @@ class PlayerActivity : AppCompatActivity() {
                     error: PlaybackException
                 ) {
 
-                    startActivity(
-
-                        Intent(
-                            this@PlayerActivity,
-                            VlcPlayerActivity::class.java
-                        )
-                            .putExtra(
-                                "url",
-                                channels[currentIndex].url
-                            )
-                    )
-
-                    finish()
+                    error.printStackTrace()
                 }
             }
         )
@@ -190,8 +175,7 @@ class PlayerActivity : AppCompatActivity() {
                     0
 
             startActivity(
-
-                Intent(
+                android.content.Intent(
                     this,
                     DualPlayerActivity::class.java
                 )
@@ -300,35 +284,23 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun showControlsTemporarily() {
 
-        btnPrev.visibility =
-            View.VISIBLE
-
-        btnNext.visibility =
-            View.VISIBLE
-
-        btnDual.visibility =
-            View.VISIBLE
+        btnPrev.visibility = View.VISIBLE
+        btnNext.visibility = View.VISIBLE
+        btnDual.visibility = View.VISIBLE
 
         if (
             !SettingsPreferences
                 .isAutoHideEnabled(this)
-        ) {
-            return
-        }
+        ) return
 
         hideHandler
             .removeCallbacksAndMessages(null)
 
         hideHandler.postDelayed({
 
-            btnPrev.visibility =
-                View.GONE
-
-            btnNext.visibility =
-                View.GONE
-
-            btnDual.visibility =
-                View.GONE
+            btnPrev.visibility = View.GONE
+            btnNext.visibility = View.GONE
+            btnDual.visibility = View.GONE
 
         }, 4000)
     }
@@ -366,13 +338,11 @@ class PlayerActivity : AppCompatActivity() {
         when (keyCode) {
 
             KeyEvent.KEYCODE_DPAD_UP -> {
-
                 previousChannel()
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
-
                 nextChannel()
                 return true
             }

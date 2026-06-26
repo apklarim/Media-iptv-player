@@ -1,18 +1,12 @@
 package com.media.iptvplayer
 
-import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.GridView
 import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.media.iptvplayer.model.Channel
 
@@ -34,26 +28,23 @@ class ChannelListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_channel_list)
 
-        listChannels = findViewById(R.id.listChannels)
-        searchBox = findViewById(R.id.etSearch)
-        groupContainer = findViewById(R.id.groupContainer)
+        listChannels =
+            findViewById(R.id.listChannels)
+
+        searchBox =
+            findViewById(R.id.etSearch)
+
+        groupContainer =
+            findViewById(R.id.groupContainer)
 
         currentCategory =
             intent.getStringExtra("CATEGORY")
                 ?: "LIVE"
 
-        selectedGroup =
-            ChannelPreferences
-                .getLastGroup(
-                    this,
-                    currentCategory
-                )
-
-        if (currentCategory == "LIVE") {
+        if (currentCategory == "LIVE")
             listChannels.numColumns = 1
-        } else {
+        else
             listChannels.numColumns = 2
-        }
 
         allChannels =
             ChannelRepository.channels
@@ -68,20 +59,10 @@ class ChannelListActivity : AppCompatActivity() {
                     .toMutableList()
         }
 
-        // ÖNEMLİ
-        ChannelRepository.channels =
+        filteredChannels =
             allChannels.toMutableList()
 
-        allChannels.forEach {
-            it.isFavorite =
-                FavoriteManager.isFavorite(
-                    this,
-                    it.name
-                )
-        }
-
-        loadGroups()
-        applyFilter()
+        loadChannels()
 
         searchBox.addTextChangedListener(
             object : TextWatcher {
@@ -91,7 +72,8 @@ class ChannelListActivity : AppCompatActivity() {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(
                     s: CharSequence?,
@@ -99,22 +81,20 @@ class ChannelListActivity : AppCompatActivity() {
                     before: Int,
                     count: Int
                 ) {
+
                     applyFilter()
                 }
 
                 override fun afterTextChanged(
                     s: Editable?
-                ) {}
+                ) {
+                }
             }
         )
 
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
-            val channel =
-                filteredChannels[position]
-
-            // ÖNEMLİ
             ChannelRepository.channels =
                 filteredChannels.toMutableList()
 
@@ -124,7 +104,7 @@ class ChannelListActivity : AppCompatActivity() {
                     PlayerActivity::class.java
                 ).putExtra(
                     "url",
-                    channel.url
+                    filteredChannels[position].url
                 )
             )
         }
@@ -140,28 +120,27 @@ class ChannelListActivity : AppCompatActivity() {
             filteredChannels[position].isFavorite =
                 !filteredChannels[position].isFavorite
 
-            applyFilter()
+            loadChannels()
 
             true
         }
     }
 
-    // Buradan sonrası eski dosyanızdaki ile aynı kalacak
-
-    private fun loadGroups() {
-        // mevcut kodunuz aynı kalacak
-    }
-
-    private fun showPinDialog(group: String) {
-        // mevcut kodunuz aynı kalacak
-    }
-
-    private fun openGroup(group: String) {
-        // mevcut kodunuz aynı kalacak
-    }
-
     private fun applyFilter() {
-        // mevcut kodunuz aynı kalacak
+
+        val search =
+            searchBox.text.toString()
+                .lowercase()
+
+        filteredChannels =
+            allChannels.filter {
+
+                it.name.lowercase()
+                    .contains(search)
+
+            }.toMutableList()
+
+        loadChannels()
     }
 
     private fun loadChannels() {

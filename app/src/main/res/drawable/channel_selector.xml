@@ -8,13 +8,9 @@
 
         <shape android:shape="rectangle">
 
-            <solid android:color="#0FA7B3"/>
+            <solid android:color="#8019C5D2"/>
 
-            <stroke
-                android:width="4dp"
-                android:color="#FFFFFF"/>
-
-            <corners android:radius="16dp"/>
+            <corners android:radius="12dp"/>
 
         </shape>
 
@@ -26,31 +22,23 @@
 
         <shape android:shape="rectangle">
 
-            <solid android:color="#19C5D2"/>
+            <solid android:color="#8019C5D2"/>
 
-            <stroke
-                android:width="4dp"
-                android:color="#FFFFFF"/>
-
-            <corners android:radius="16dp"/>
+            <corners android:radius="12dp"/>
 
         </shape>
 
     </item>
 
-    <!-- Odaklanmış (TV Kumandası) -->
+    <!-- Odaklanmış -->
 
     <item android:state_focused="true">
 
         <shape android:shape="rectangle">
 
-            <solid android:color="#19C5D2"/>
+            <solid android:color="#8019C5D2"/>
 
-            <stroke
-                android:width="4dp"
-                android:color="#FFFFFF"/>
-
-            <corners android:radius="16dp"/>
+            <corners android:radius="12dp"/>
 
         </shape>
 
@@ -62,13 +50,7 @@
 
         <shape android:shape="rectangle">
 
-            <solid android:color="#10232B"/>
-
-            <stroke
-                android:width="2dp"
-                android:color="#2A4D57"/>
-
-            <corners android:radius="16dp"/>
+            <solid android:color="#00000000"/>
 
         </shape>
 

@@ -17,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 
@@ -108,8 +110,22 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex < 0)
             currentIndex = 0
 
+        // ExoPlayer + User-Agent
+
+        val httpDataSourceFactory =
+            DefaultHttpDataSource.Factory()
+                .setUserAgent(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                )
+                .setAllowCrossProtocolRedirects(true)
+
         player =
             ExoPlayer.Builder(this)
+                .setMediaSourceFactory(
+                    DefaultMediaSourceFactory(
+                        httpDataSourceFactory
+                    )
+                )
                 .build()
 
         playerView.player = player
@@ -232,6 +248,7 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         player.prepare()
+
         player.playWhenReady = true
     }
 

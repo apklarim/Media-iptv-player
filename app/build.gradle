@@ -11,13 +11,11 @@ android {
 
     defaultConfig {
 
-        // Eski sürüm ile aynı olmalı
         applicationId "com.media.iptvplayer"
 
         minSdk 24
         targetSdk 36
 
-        // Her yeni APK'da artırılmalı
         versionCode 2
         versionName "1.1"
     }
@@ -48,6 +46,14 @@ android {
     buildFeatures {
 
         viewBinding true
+    }
+
+    applicationVariants.all { variant ->
+
+        variant.outputs.all { output ->
+
+            outputFileName = "Media IPTV Player.apk"
+        }
     }
 }
 

@@ -39,17 +39,19 @@ object M3uParser {
                 line.startsWith("https://")
             ) {
 
-                // URL sonundaki |User-Agent=... kısmını temizle
-
                 val cleanUrl =
                     line.substringBefore("|")
+
+                val userAgent =
+                    if (line.contains("|User-Agent="))
+                        line.substringAfter("|User-Agent=")
+                    else
+                        ""
 
                 val group =
                     currentGroup.lowercase()
 
                 val category = when {
-
-                    // Filmler
 
                     group.contains("movie") ||
                     group.contains("movies") ||
@@ -66,8 +68,6 @@ object M3uParser {
 
                         "MOVIE"
 
-                    // Diziler
-
                     group.contains("series") ||
                     group.contains("serial") ||
                     group.contains("dizi") ||
@@ -75,8 +75,6 @@ object M3uParser {
                     group.contains("show") ->
 
                         "SERIES"
-
-                    // Canlı TV
 
                     else ->
                         "LIVE"
@@ -89,7 +87,8 @@ object M3uParser {
                         url = cleanUrl,
                         logo = currentLogo,
                         group = currentGroup,
-                        category = category
+                        category = category,
+                        userAgent = userAgent
                     )
                 )
             }

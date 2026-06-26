@@ -42,23 +42,41 @@ class SettingsActivity : AppCompatActivity() {
                 R.id.switchLastChannel
             )
 
-        // Kayıtlı ayarı yükle
+        // Kayıtlı ayarları yükle
 
         switchAutoHide.isChecked =
             SettingsPreferences
                 .isAutoHideEnabled(this)
 
-        // Ayarı kaydet
-
-        switchAutoHide.setOnCheckedChangeListener {
-                _, isChecked ->
-
+        switchLastPlaylist.isChecked =
             SettingsPreferences
-                .setAutoHideEnabled(
-                    this,
-                    isChecked
-                )
-        }
+                .isAutoLoadLastPlaylistEnabled(this)
+
+        // Player butonlarını otomatik gizle
+
+        switchAutoHide
+            .setOnCheckedChangeListener {
+                    _, isChecked ->
+
+                SettingsPreferences
+                    .setAutoHideEnabled(
+                        this,
+                        isChecked
+                    )
+            }
+
+        // Son listeyi otomatik aç
+
+        switchLastPlaylist
+            .setOnCheckedChangeListener {
+                    _, isChecked ->
+
+                SettingsPreferences
+                    .setAutoLoadLastPlaylistEnabled(
+                        this,
+                        isChecked
+                    )
+            }
 
         btnAbout.setOnClickListener {
 

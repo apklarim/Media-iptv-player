@@ -5,7 +5,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="MEDYA IPTV Player"
+        android:label="Media IPTV Player"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MediaIPTVPlayer">
@@ -34,6 +34,14 @@
 
         <activity
             android:name=".AddPlaylistActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".M3uUrlActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".XtreamActivity"
             android:exported="false"/>
 
         <activity

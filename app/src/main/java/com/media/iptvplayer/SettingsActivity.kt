@@ -52,6 +52,10 @@ class SettingsActivity : AppCompatActivity() {
             SettingsPreferences
                 .isAutoLoadLastPlaylistEnabled(this)
 
+        switchLastChannel.isChecked =
+            SettingsPreferences
+                .isAutoLoadLastChannelEnabled(this)
+
         // Player butonlarını otomatik gizle
 
         switchAutoHide
@@ -73,6 +77,19 @@ class SettingsActivity : AppCompatActivity() {
 
                 SettingsPreferences
                     .setAutoLoadLastPlaylistEnabled(
+                        this,
+                        isChecked
+                    )
+            }
+
+        // Son kanalı otomatik aç
+
+        switchLastChannel
+            .setOnCheckedChangeListener {
+                    _, isChecked ->
+
+                SettingsPreferences
+                    .setAutoLoadLastChannelEnabled(
                         this,
                         isChecked
                     )

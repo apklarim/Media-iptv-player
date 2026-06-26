@@ -80,8 +80,6 @@ class AddPlaylistActivity : AppCompatActivity() {
             resultCode == RESULT_OK
         ) {
 
-            // Çoklu seçim
-
             data?.clipData?.let { clip ->
 
                 for (i in 0 until clip.itemCount) {
@@ -92,16 +90,12 @@ class AddPlaylistActivity : AppCompatActivity() {
                 }
 
                 finish()
-
                 return
             }
-
-            // Tek seçim
 
             data?.data?.let {
 
                 processUri(it)
-
                 finish()
             }
         }
@@ -132,7 +126,7 @@ class AddPlaylistActivity : AppCompatActivity() {
             val channels =
                 M3uParser.parse(content)
 
-            ChannelRepository.channels = channels
+            ChannelRepository.setChannels(channels)
 
             val fileName =
                 uri.lastPathSegment

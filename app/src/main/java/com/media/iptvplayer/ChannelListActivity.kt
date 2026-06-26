@@ -19,7 +19,6 @@ class ChannelListActivity : AppCompatActivity() {
     private var allChannels = mutableListOf<Channel>()
     private var filteredChannels = mutableListOf<Channel>()
 
-    private var selectedGroup = "Tümü"
     private var currentCategory = "LIVE"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,23 +27,16 @@ class ChannelListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_channel_list)
 
-        listChannels =
-            findViewById(R.id.listChannels)
-
-        searchBox =
-            findViewById(R.id.etSearch)
-
-        groupContainer =
-            findViewById(R.id.groupContainer)
+        listChannels = findViewById(R.id.listChannels)
+        searchBox = findViewById(R.id.etSearch)
+        groupContainer = findViewById(R.id.groupContainer)
 
         currentCategory =
             intent.getStringExtra("CATEGORY")
                 ?: "LIVE"
 
-        if (currentCategory == "LIVE")
-            listChannels.numColumns = 1
-        else
-            listChannels.numColumns = 2
+        listChannels.numColumns =
+            if (currentCategory == "LIVE") 1 else 2
 
         allChannels =
             ChannelRepository.channels
@@ -95,8 +87,10 @@ class ChannelListActivity : AppCompatActivity() {
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
-            ChannelRepository.channels =
-                filteredChannels.toMutableList()
+            // Tüm kategori listesini koru
+            ChannelRepository.setChannels(
+                allChannels
+            )
 
             startActivity(
                 Intent(

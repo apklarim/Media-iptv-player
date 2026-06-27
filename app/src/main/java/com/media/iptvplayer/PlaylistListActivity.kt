@@ -69,14 +69,10 @@ class PlaylistListActivity : AppCompatActivity() {
                 names
             )
 
-        // Liste seçildi
-
         listView.setOnItemClickListener {
                 _, _, position, _ ->
 
             val playlist = playlists[position]
-
-            // Son seçilen listeyi kaydet
 
             LastPlaylistManager.saveLastPlaylist(
                 this,
@@ -117,20 +113,37 @@ class PlaylistListActivity : AppCompatActivity() {
                     } else {
 
                         content =
-                            withContext(
-                                Dispatchers.IO
-                            ) {
+                            PlaylistCacheManager
+                                .getCache(
+                                    this@PlaylistListActivity,
+                                    playlist.url
+                                ) ?: ""
 
-                                NetworkUtils
-                                    .downloadText(
-                                        playlist.url
-                                    )
-                            }
+                        if (content.isEmpty()) {
+
+                            content =
+                                withContext(
+                                    Dispatchers.IO
+                                ) {
+
+                                    NetworkUtils
+                                        .downloadText(
+                                            playlist.url
+                                        )
+                                }
+
+                            PlaylistCacheManager
+                                .saveCache(
+                                    this@PlaylistListActivity,
+                                    playlist.url,
+                                    content
+                                )
+                        }
                     }
 
-ChannelRepository.setChannels(
-    M3uParser.parse(content)
-)
+                    ChannelRepository.setChannels(
+                        M3uParser.parse(content)
+                    )
 
                     Toast.makeText(
                         this@PlaylistListActivity,
@@ -156,8 +169,6 @@ ChannelRepository.setChannels(
             }
         }
 
-        // Uzun basınca menü
-
         listView.setOnItemLongClickListener {
                 _, _, position, _ ->
 
@@ -177,8 +188,6 @@ ChannelRepository.setChannels(
                 ) { dialog, which ->
 
                     when (which) {
-
-                        // Düzenle
 
                         0 -> {
 
@@ -258,8 +267,6 @@ ChannelRepository.setChannels(
                                 .show()
                         }
 
-                        // Sil
-
                         1 -> {
 
                             PlaylistManager
@@ -267,6 +274,9 @@ ChannelRepository.setChannels(
                                     this,
                                     playlist.id
                                 )
+
+                            PlaylistCacheManager
+                                .clearCache(this)
 
                             Toast.makeText(
                                 this,

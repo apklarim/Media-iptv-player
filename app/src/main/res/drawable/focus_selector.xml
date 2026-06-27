@@ -2,43 +2,86 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Basılı -->
+
     <item android:state_pressed="true">
 
         <shape>
-            <corners android:radius="18dp"/>
 
-            <solid
-                android:color="#5500BCD4"/>
+            <gradient
+                android:startColor="#FF9800"
+                android:endColor="#FFC107"
+                android:angle="0"/>
 
             <stroke
-                android:width="3dp"
-                android:color="#00BCD4"/>
+                android:width="4dp"
+                android:color="#FFFFFF"/>
+
+            <corners android:radius="18dp"/>
+
         </shape>
 
     </item>
+
+    <!-- Kumanda / Air Mouse -->
 
     <item android:state_focused="true">
 
         <shape>
-            <corners android:radius="18dp"/>
 
-            <solid
-                android:color="#5500BCD4"/>
+            <gradient
+                android:startColor="#1565C0"
+                android:endColor="#42A5F5"
+                android:angle="0"/>
 
             <stroke
-                android:width="3dp"
-                android:color="#00BCD4"/>
+                android:width="4dp"
+                android:color="#FFFFFF"/>
+
+            <corners android:radius="18dp"/>
+
         </shape>
 
     </item>
 
+    <!-- Seçili -->
+
+    <item android:state_selected="true">
+
+        <shape>
+
+            <gradient
+                android:startColor="#00897B"
+                android:endColor="#26A69A"
+                android:angle="0"/>
+
+            <stroke
+                android:width="4dp"
+                android:color="#FFFFFF"/>
+
+            <corners android:radius="18dp"/>
+
+        </shape>
+
+    </item>
+
+    <!-- Normal -->
+
     <item>
 
         <shape>
+
+            <gradient
+                android:startColor="#10212A"
+                android:endColor="#1B3542"
+                android:angle="0"/>
+
+            <stroke
+                android:width="2dp"
+                android:color="#204050"/>
+
             <corners android:radius="18dp"/>
 
-            <solid
-                android:color="#222222"/>
         </shape>
 
     </item>

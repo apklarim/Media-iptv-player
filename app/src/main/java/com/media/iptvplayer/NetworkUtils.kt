@@ -71,10 +71,7 @@ object NetworkUtils {
             }
 
         return inputStream
-            .bufferedReader(
-                Charsets.UTF_8,
-                64 * 1024
-            )
+            .bufferedReader()
             .use {
                 it.readText()
             }

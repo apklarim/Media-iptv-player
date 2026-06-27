@@ -264,17 +264,57 @@ private fun loadChannelList() {
 
         when (keyCode) {
 
-            KeyEvent.KEYCODE_DPAD_UP -> {
+KeyEvent.KEYCODE_DPAD_UP -> {
 
-                previousChannel()
-                return true
-            }
+    if (channelList.visibility == View.VISIBLE) {
 
-            KeyEvent.KEYCODE_DPAD_DOWN -> {
+        channelList.requestFocus()
+        channelList.dispatchKeyEvent(event)
+        return true
+    }
 
-                nextChannel()
-                return true
-            }
+    previousChannel()
+    return true
+}
+
+KeyEvent.KEYCODE_DPAD_DOWN -> {
+
+    if (channelList.visibility == View.VISIBLE) {
+
+        channelList.requestFocus()
+        channelList.dispatchKeyEvent(event)
+        return true
+    }
+
+    nextChannel()
+    return true
+}
+
+KeyEvent.KEYCODE_DPAD_CENTER,
+KeyEvent.KEYCODE_ENTER -> {
+
+    if (channelList.visibility == View.VISIBLE) {
+
+        channelList.performItemClick(
+            channelList.selectedView,
+            channelList.selectedItemPosition,
+            channelList.selectedItemId
+        )
+
+        return true
+    }
+
+    channelList.visibility =
+        if (channelList.visibility == View.VISIBLE)
+            View.GONE
+        else {
+            channelList.visibility = View.VISIBLE
+            channelList.requestFocus()
+            View.VISIBLE
+        }
+
+    return true
+}
 
             KeyEvent.KEYCODE_DPAD_CENTER,
             KeyEvent.KEYCODE_ENTER -> {

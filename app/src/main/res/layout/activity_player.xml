@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         app:resize_mode="zoom"
         app:show_timeout="5000"
-        app:controller_auto_show="true"
         app:use_controller="true"
         app:show_rewind_button="true"
         app:show_fastforward_button="true"
@@ -30,6 +29,7 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/playerButtonsContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
@@ -40,7 +40,9 @@
             android:id="@+id/btnPrev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/player_button_selector"
             android:text="◀ Önceki"
+            android:textColor="#FFFFFF"
             android:visibility="visible" />
 
         <Button
@@ -48,7 +50,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:background="@drawable/player_button_selector"
             android:text="Sonraki ▶"
+            android:textColor="#FFFFFF"
             android:visibility="visible" />
 
     </LinearLayout>

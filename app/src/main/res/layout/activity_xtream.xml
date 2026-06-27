@@ -1,82 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#050B12">
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#050B12">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#00ACC1"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:text="Xtream Codes Ekle"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/etXtreamName"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_margin="16dp"
+                android:background="#1A1A1A"
+                android:hint="Liste Adı"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#888888"
+                android:padding="16dp"/>
+
+            <EditText
+                android:id="@+id/etServer"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="#1A1A1A"
+                android:hint="Sunucu URL"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#888888"
+                android:padding="16dp"/>
+
+            <EditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_margin="16dp"
+                android:background="#1A1A1A"
+                android:hint="Kullanıcı Adı"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#888888"
+                android:padding="16dp"/>
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="#1A1A1A"
+                android:hint="Şifre"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#888888"
+                android:padding="16dp"/>
+
+            <Button
+                android:id="@+id/btnSaveXtream"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_margin="16dp"
+                android:backgroundTint="#00BCD4"
+                android:text="KAYDET"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <LinearLayout
+        android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="#00ACC1"
-            android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:text="Xtream Codes Ekle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Xtream listesi yükleniyor..."
             android:textColor="#FFFFFF"
-            android:textSize="28sp"
-            android:textStyle="bold"/>
-
-        <EditText
-            android:id="@+id/etXtreamName"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_margin="16dp"
-            android:background="#1A1A1A"
-            android:hint="Liste Adı"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:padding="16dp"/>
-
-        <EditText
-            android:id="@+id/etServer"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="#1A1A1A"
-            android:hint="Sunucu URL"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:padding="16dp"/>
-
-        <EditText
-            android:id="@+id/etUsername"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_margin="16dp"
-            android:background="#1A1A1A"
-            android:hint="Kullanıcı Adı"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:padding="16dp"/>
-
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="#1A1A1A"
-            android:hint="Şifre"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:padding="16dp"/>
-
-        <Button
-            android:id="@+id/btnSaveXtream"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_margin="16dp"
-            android:backgroundTint="#00BCD4"
-            android:text="KAYDET"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"/>
+            android:textSize="20sp"/>
 
     </LinearLayout>
 
-</ScrollView>
+</FrameLayout>

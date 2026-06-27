@@ -100,11 +100,16 @@ class PlayerActivity : AppCompatActivity() {
             currentIndex < channels.size) {
 
             val category =
-                channels[currentIndex].category
+                channels[currentIndex]
+                    .category
+                    .uppercase()
 
             playerView.useController =
-                category == "MOVIE" ||
-                category == "SERIES"
+                category.contains("MOVIE") ||
+                category.contains("SERIES") ||
+                category.contains("FILM") ||
+                category.contains("DIZI") ||
+                category.contains("VOD")
         }
 
         playChannel(currentIndex)
@@ -130,6 +135,7 @@ class PlayerActivity : AppCompatActivity() {
                     View.VISIBLE
 
             if (channelList.visibility == View.VISIBLE) {
+
                 channelList.requestFocus()
                 channelList.setSelection(currentIndex)
             }
@@ -151,9 +157,15 @@ class PlayerActivity : AppCompatActivity() {
 
         val channel = channels[index]
 
+        val category =
+            channel.category.uppercase()
+
         playerView.useController =
-            channel.category == "MOVIE" ||
-            channel.category == "SERIES"
+            category.contains("MOVIE") ||
+            category.contains("SERIES") ||
+            category.contains("FILM") ||
+            category.contains("DIZI") ||
+            category.contains("VOD")
 
         PlayerPreferences.saveLastChannel(
             this,
@@ -364,7 +376,6 @@ class PlayerActivity : AppCompatActivity() {
                 channelList.visibility = View.VISIBLE
 
                 channelList.requestFocus()
-
                 channelList.setSelection(currentIndex)
 
                 return true

@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
@@ -52,39 +51,31 @@ class ChannelAdapter(
             else
                 channel.name
 
-        // Performans için sabit logo
-
+        // Performans için logolar kapalı
         logo.setImageResource(
             R.drawable.ic_media_logo
         )
 
-        // TV / TV Box odak animasyonu
-
-        view.isFocusable = true
-        view.isFocusableInTouchMode = true
-
-        view.setOnFocusChangeListener {
-                v, hasFocus ->
+        // TV / TV Box odak efekti
+        view.setOnFocusChangeListener { v, hasFocus ->
 
             if (hasFocus) {
 
-                v.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.focus_scale
-                    )
-                )
+                v.animate()
+                    .scaleX(1.08f)
+                    .scaleY(1.08f)
+                    .setDuration(150)
+                    .start()
 
                 v.elevation = 20f
 
             } else {
 
-                v.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.focus_unscale
-                    )
-                )
+                v.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(150)
+                    .start()
 
                 v.elevation = 0f
             }

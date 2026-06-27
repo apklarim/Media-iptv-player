@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import coil.load
 import com.media.iptvplayer.model.Channel
 
 class ChannelAdapter(
@@ -52,29 +51,10 @@ class ChannelAdapter(
             else
                 channel.name
 
-        if (channel.logo.isNotEmpty()) {
-
-            logo.load(channel.logo) {
-
-                crossfade(false)
-
-                placeholder(
-                    R.drawable.ic_media_logo
-                )
-
-                error(
-                    R.drawable.ic_media_logo
-                )
-
-                allowHardware(true)
-            }
-
-        } else {
-
-            logo.setImageResource(
-                R.drawable.ic_media_logo
-            )
-        }
+        // Hız için internetten logo yükleme kapatıldı
+        logo.setImageResource(
+            R.drawable.ic_media_logo
+        )
 
         return view
     }

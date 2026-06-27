@@ -3,14 +3,17 @@ package com.media.iptvplayer
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.Switch
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var btnAbout: Button
+    private lateinit var btnAdultPin: Button
 
     private lateinit var switchAutoHide: Switch
     private lateinit var switchLastPlaylist: Switch
@@ -32,6 +35,9 @@ class SettingsActivity : AppCompatActivity() {
 
         btnAbout =
             findViewById(R.id.btnAbout)
+
+        btnAdultPin =
+            findViewById(R.id.btnAdultPin)
 
         switchAutoHide =
             findViewById(R.id.switchAutoHide)
@@ -153,12 +159,73 @@ class SettingsActivity : AppCompatActivity() {
                     )
             }
 
+        // Yetişkin PIN değiştir
+
+        btnAdultPin.setOnClickListener {
+
+            val input = android.widget.EditText(this)
+
+            input.hint = "Yeni PIN (4 rakam)"
+
+            input.inputType =
+                InputType.TYPE_CLASS_NUMBER
+
+            AlertDialog.Builder(this)
+                .setTitle(
+                    "Yetişkin PIN Değiştir"
+                )
+
+                .setView(input)
+
+                .setPositiveButton(
+                    "Kaydet"
+                ) { _, _ ->
+
+                    val newPin =
+                        input.text
+                            .toString()
+                            .trim()
+
+                    if (newPin.length < 4) {
+
+                        Toast.makeText(
+                            this,
+                            "PIN en az 4 rakam olmalıdır",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    } else {
+
+                        AdultPinManager.setPin(
+                            this,
+                            newPin
+                        )
+
+                        Toast.makeText(
+                            this,
+                            "PIN kaydedildi",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                .setNegativeButton(
+                    "İptal",
+                    null
+                )
+
+                .show()
+        }
+
+        // Hakkında
+
         btnAbout.setOnClickListener {
 
             AlertDialog.Builder(this)
                 .setTitle(
                     "Media IPTV Player"
                 )
+
                 .setMessage(
                     """
 Sürüm : 1.1
@@ -172,10 +239,12 @@ gelişmiş IPTV oynatıcı.
 © 2026
                     """.trimIndent()
                 )
+
                 .setPositiveButton(
                     "Tamam",
                     null
                 )
+
                 .show()
         }
     }

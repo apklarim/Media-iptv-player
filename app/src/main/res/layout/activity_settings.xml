@@ -151,6 +151,17 @@
             android:textSize="24sp"/>
 
         <Button
+            android:id="@+id/btnAdultPin"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/focus_selector"
+            android:text="Yetişkin PIN Değiştir"
+            android:textColor="#FFFFFF"/>
+
+        <Button
             android:id="@+id/btnAbout"
             android:layout_width="match_parent"
             android:layout_height="60dp"

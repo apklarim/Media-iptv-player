@@ -5,7 +5,6 @@
     android:layout_height="80dp"
     android:layout_margin="4dp"
     android:background="@drawable/channel_item_selector"
-    android:descendantFocusability="blocksDescendants"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="8dp">

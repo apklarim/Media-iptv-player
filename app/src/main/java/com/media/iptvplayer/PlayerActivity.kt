@@ -51,16 +51,22 @@ class PlayerActivity : AppCompatActivity() {
         btnPrev = findViewById(R.id.btnPrev)
         btnNext = findViewById(R.id.btnNext)
 
+        // Tıklanan kanalı al
         var url = intent.getStringExtra("url")
 
-        if (SettingsPreferences
-                .isAutoLoadLastChannelEnabled(this)) {
+        // Eğer doğrudan PlayerActivity açılmışsa
+        // son izlenen kanalı yükle
+        if (url.isNullOrEmpty()) {
 
-            val lastChannelUrl =
-                PlayerPreferences.getLastChannel(this)
+            if (SettingsPreferences
+                    .isAutoLoadLastChannelEnabled(this)) {
 
-            if (!lastChannelUrl.isNullOrEmpty()) {
-                url = lastChannelUrl
+                val lastChannelUrl =
+                    PlayerPreferences.getLastChannel(this)
+
+                if (!lastChannelUrl.isNullOrEmpty()) {
+                    url = lastChannelUrl
+                }
             }
         }
 
@@ -108,6 +114,12 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.setOnClickListener {
 
+            channelList.visibility =
+                if (channelList.visibility == View.VISIBLE)
+                    View.GONE
+                else
+                    View.VISIBLE
+
             showControlsTemporarily()
         }
 
@@ -136,7 +148,9 @@ class PlayerActivity : AppCompatActivity() {
             else
                 "Mozilla/5.0"
 
-        player.release()
+        if (::player.isInitialized) {
+            player.release()
+        }
 
         val httpDataSourceFactory =
             DefaultHttpDataSource.Factory()
@@ -174,9 +188,7 @@ class PlayerActivity : AppCompatActivity() {
 
         val mediaItem =
             MediaItem.fromUri(
-                Uri.parse(
-                    channel.url.trim()
-                )
+                Uri.parse(channel.url.trim())
             )
 
         player.setMediaItem(mediaItem)

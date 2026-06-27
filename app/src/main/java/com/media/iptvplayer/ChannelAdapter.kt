@@ -26,18 +26,13 @@ class ChannelAdapter(
         parent: ViewGroup
     ): View {
 
-        val view =
-            convertView ?: LayoutInflater
-                .from(context)
-                .inflate(
-                    R.layout.item_channel,
-                    parent,
-                    false
-                )
-
-        // TV ve TV Box için odak desteği
-        view.isFocusable = true
-        view.isFocusableInTouchMode = true
+        val view = convertView ?: LayoutInflater
+            .from(context)
+            .inflate(
+                R.layout.item_channel,
+                parent,
+                false
+            )
 
         val channel = channels[position]
 
@@ -79,27 +74,6 @@ class ChannelAdapter(
             logo.setImageResource(
                 R.drawable.ic_media_logo
             )
-        }
-
-        // Odak animasyonu
-        view.setOnFocusChangeListener { v, hasFocus ->
-
-            if (hasFocus) {
-
-                v.animate()
-                    .scaleX(1.05f)
-                    .scaleY(1.05f)
-                    .setDuration(120)
-                    .start()
-
-            } else {
-
-                v.animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(120)
-                    .start()
-            }
         }
 
         return view

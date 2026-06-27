@@ -90,7 +90,14 @@ class PlayerActivity : AppCompatActivity() {
                 override fun onPlayerError(
                     error: PlaybackException
                 ) {
+
                     error.printStackTrace()
+
+                    android.widget.Toast.makeText(
+                        this@PlayerActivity,
+                        error.errorCodeName,
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         )
@@ -161,8 +168,6 @@ class PlayerActivity : AppCompatActivity() {
 
         val channel = channels[index]
 
-        // Yetişkin kanal kontrolü
-
         if (
             AdultPinManager.isAdultChannel(
                 channel.group,
@@ -207,7 +212,6 @@ class PlayerActivity : AppCompatActivity() {
                     "İptal",
                     null
                 )
-
                 .show()
 
             return
@@ -237,23 +241,41 @@ class PlayerActivity : AppCompatActivity() {
             if (channel.userAgent.isNotEmpty())
                 channel.userAgent
             else
-                "Mozilla/5.0"
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                        "Chrome/137.0 Safari/537.36"
 
         if (::player.isInitialized) {
             player.release()
+        }
+
+        val headers = mutableMapOf<String, String>()
+
+        headers["User-Agent"] = ua
+        headers["Accept"] = "*/*"
+        headers["Accept-Language"] =
+            "tr-TR,tr;q=0.9,en-US;q=0.8"
+        headers["Accept-Encoding"] = "identity"
+        headers["Connection"] = "keep-alive"
+
+        if (channel.url.contains("workers.dev") ||
+            channel.url.contains("kool.to")
+        ) {
+
+            headers["Referer"] =
+                "https://kool.to/"
+
+            headers["Origin"] =
+                "https://kool.to"
         }
 
         val httpDataSourceFactory =
             DefaultHttpDataSource.Factory()
                 .setUserAgent(ua)
                 .setAllowCrossProtocolRedirects(true)
-                .setDefaultRequestProperties(
-                    mapOf(
-                        "User-Agent" to ua,
-                        "Accept" to "*/*",
-                        "Connection" to "keep-alive"
-                    )
-                )
+                .setConnectTimeoutMs(20000)
+                .setReadTimeoutMs(30000)
+                .setDefaultRequestProperties(headers)
 
         player =
             ExoPlayer.Builder(this)
@@ -272,7 +294,14 @@ class PlayerActivity : AppCompatActivity() {
                 override fun onPlayerError(
                     error: PlaybackException
                 ) {
+
                     error.printStackTrace()
+
+                    android.widget.Toast.makeText(
+                        this@PlayerActivity,
+                        error.errorCodeName,
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         )
@@ -484,6 +513,4 @@ class PlayerActivity : AppCompatActivity() {
             player.release()
         }
 
-        super.onDestroy()
-    }
-}
+       

@@ -2,27 +2,44 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_pressed="true">
-        <shape>
-            <solid android:color="#FFC107"/>
-        </shape>
-    </item>
-
+    <!-- Seçili / OK ile seçilen -->
     <item android:state_selected="true">
         <shape>
-            <solid android:color="#2196F3"/>
+            <solid android:color="#FFC107"/>
+            <stroke
+                android:width="3dp"
+                android:color="#FFFFFF"/>
+            <corners android:radius="12dp"/>
         </shape>
     </item>
 
+    <!-- Kumanda ile üzerinde gezinilen -->
     <item android:state_focused="true">
         <shape>
             <solid android:color="#2196F3"/>
+            <stroke
+                android:width="4dp"
+                android:color="#FFFFFF"/>
+            <corners android:radius="12dp"/>
         </shape>
     </item>
 
+    <!-- Basılı -->
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#4CAF50"/>
+            <stroke
+                android:width="4dp"
+                android:color="#FFFFFF"/>
+            <corners android:radius="12dp"/>
+        </shape>
+    </item>
+
+    <!-- Normal -->
     <item>
         <shape>
             <solid android:color="#10212A"/>
+            <corners android:radius="12dp"/>
         </shape>
     </item>
 

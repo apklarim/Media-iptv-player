@@ -513,4 +513,6 @@ class PlayerActivity : AppCompatActivity() {
             player.release()
         }
 
-       
+               super.onDestroy()
+    }
+}

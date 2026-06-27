@@ -1,6 +1,9 @@
 package com.media.iptvplayer
 
 import android.net.Uri
+import android.app.PictureInPictureParams
+import android.os.Build
+import android.util.Rational
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper

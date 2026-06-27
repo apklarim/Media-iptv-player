@@ -1,73 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
-
-    <!-- Player -->
+    android:background="@android:color/black">
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:show_timeout="3000"
-        app:use_controller="true"/>
-
-    <!-- 2X Butonu -->
-
-    <Button
-        android:id="@+id/btnDual"
-        android:layout_width="70dp"
-        android:layout_height="50dp"
-        android:layout_gravity="top|end"
-        android:layout_margin="16dp"
-        android:background="@drawable/player_button_background"
-        android:text="2X"
-        android:textColor="#FFFFFF"/>
-
-    <!-- Önceki / Sonraki -->
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnPrev"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:background="@drawable/player_button_background"
-            android:text="◀"
-            android:textColor="#FFFFFF"/>
-
-        <Button
-            android:id="@+id/btnNext"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/player_button_background"
-            android:text="▶"
-            android:textColor="#FFFFFF"/>
-
-    </LinearLayout>
-
-    <!-- Kanal Listesi -->
+        app:resize_mode="zoom"
+        app:show_timeout="0"
+        app:use_controller="false" />
 
     <ListView
         android:id="@+id/listChannels"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="#DD10232B"
-        android:choiceMode="singleChoice"
-        android:divider="#3300BCD4"
+        android:layout_gravity="start"
+        android:background="#CC000000"
+        android:divider="#33FFFFFF"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/channel_selector"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnPrev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="◀ Önceki"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Sonraki ▶"
+            android:visibility="visible" />
+
+    </LinearLayout>
 
 </FrameLayout>

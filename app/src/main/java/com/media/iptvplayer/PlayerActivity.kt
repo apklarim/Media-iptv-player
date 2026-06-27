@@ -51,11 +51,8 @@ class PlayerActivity : AppCompatActivity() {
         btnPrev = findViewById(R.id.btnPrev)
         btnNext = findViewById(R.id.btnNext)
 
-        // Tıklanan kanalı al
         var url = intent.getStringExtra("url")
 
-        // Eğer doğrudan PlayerActivity açılmışsa
-        // son izlenen kanalı yükle
         if (url.isNullOrEmpty()) {
 
             if (SettingsPreferences
@@ -119,6 +116,11 @@ class PlayerActivity : AppCompatActivity() {
                     View.GONE
                 else
                     View.VISIBLE
+
+            if (channelList.visibility == View.VISIBLE) {
+                channelList.requestFocus()
+                channelList.setSelection(currentIndex)
+            }
 
             showControlsTemporarily()
         }
@@ -201,7 +203,10 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex > 0) {
 
             currentIndex--
+
             playChannel(currentIndex)
+
+            channelList.setSelection(currentIndex)
         }
     }
 
@@ -210,31 +215,41 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex < channels.size - 1) {
 
             currentIndex++
+
             playChannel(currentIndex)
+
+            channelList.setSelection(currentIndex)
         }
     }
 
-private fun loadChannelList() {
+    private fun loadChannelList() {
 
-    val adapter = ArrayAdapter(
-        this,
-        R.layout.player_channel_item,
-        R.id.txtPlayerChannel,
-        channels.map { it.name }
-    )
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.player_channel_item,
+            R.id.txtPlayerChannel,
+            channels.map { it.name }
+        )
 
-    channelList.adapter = adapter
+        channelList.adapter = adapter
 
-    channelList.setOnItemClickListener {
-            _, _, position, _ ->
+        channelList.choiceMode =
+            ListView.CHOICE_MODE_SINGLE
 
-        playChannel(position)
+        channelList.setSelection(currentIndex)
 
-        channelList.visibility = View.GONE
+        channelList.setOnItemClickListener {
+                _, _, position, _ ->
 
-        showControlsTemporarily()
+            currentIndex = position
+
+            playChannel(position)
+
+            channelList.visibility = View.GONE
+
+            showControlsTemporarily()
+        }
     }
-}
 
     private fun showControlsTemporarily() {
 
@@ -264,69 +279,89 @@ private fun loadChannelList() {
 
         when (keyCode) {
 
-KeyEvent.KEYCODE_DPAD_UP -> {
+            KeyEvent.KEYCODE_DPAD_UP -> {
 
-    if (channelList.visibility == View.VISIBLE) {
+                if (channelList.visibility == View.VISIBLE) {
 
-        channelList.requestFocus()
-        channelList.dispatchKeyEvent(event)
-        return true
-    }
+                    val current =
+                        channelList.selectedItemPosition
 
-    previousChannel()
-    return true
-}
+                    if (current > 0) {
 
-KeyEvent.KEYCODE_DPAD_DOWN -> {
+                        channelList.setSelection(
+                            current - 1
+                        )
+                    }
 
-    if (channelList.visibility == View.VISIBLE) {
+                    return true
+                }
 
-        channelList.requestFocus()
-        channelList.dispatchKeyEvent(event)
-        return true
-    }
+                previousChannel()
+                return true
+            }
 
-    nextChannel()
-    return true
-}
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
 
-KeyEvent.KEYCODE_DPAD_CENTER,
-KeyEvent.KEYCODE_ENTER -> {
+                if (channelList.visibility == View.VISIBLE) {
 
-    if (channelList.visibility == View.VISIBLE) {
+                    val current =
+                        channelList.selectedItemPosition
 
-        channelList.performItemClick(
-            channelList.selectedView,
-            channelList.selectedItemPosition,
-            channelList.selectedItemId
-        )
+                    if (current < channelList.count - 1) {
 
-        return true
-    }
+                        channelList.setSelection(
+                            current + 1
+                        )
+                    }
 
-    channelList.visibility =
-        if (channelList.visibility == View.VISIBLE)
-            View.GONE
-        else {
-            channelList.visibility = View.VISIBLE
-            channelList.requestFocus()
-            View.VISIBLE
-        }
+                    return true
+                }
 
-    return true
-}
+                nextChannel()
+                return true
+            }
 
             KeyEvent.KEYCODE_DPAD_CENTER,
             KeyEvent.KEYCODE_ENTER -> {
 
-                channelList.visibility =
-                    if (channelList.visibility ==
-                        View.VISIBLE)
-                        View.GONE
-                    else
-                        View.VISIBLE
+                if (channelList.visibility == View.VISIBLE) {
+
+                    val position =
+                        channelList.selectedItemPosition
+
+                    if (position >= 0 &&
+                        position < channels.size
+                    ) {
+
+                        currentIndex = position
+
+                        playChannel(position)
+
+                        channelList.visibility = View.GONE
+
+                        showControlsTemporarily()
+                    }
+
+                    return true
+                }
+
+                channelList.visibility = View.VISIBLE
+
+                channelList.requestFocus()
+
+                channelList.setSelection(currentIndex)
 
                 return true
+            }
+
+            KeyEvent.KEYCODE_BACK -> {
+
+                if (channelList.visibility == View.VISIBLE) {
+
+                    channelList.visibility = View.GONE
+
+                    return true
+                }
             }
         }
 

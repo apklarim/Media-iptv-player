@@ -1,25 +1,56 @@
 package com.media.iptvplayer
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 object FavoriteManager {
 
-    private const val PREFS = "favorites"
+    private const val FILE_NAME =
+        "favorites.json"
+
+    private fun getFavorites():
+            MutableSet<String> {
+
+        val json =
+            FileStorageManager.readText(
+                FILE_NAME,
+                "[]"
+            )
+
+        val type =
+            object : TypeToken<MutableSet<String>>() {}.type
+
+        return try {
+
+            Gson().fromJson<MutableSet<String>>(
+                json,
+                type
+            ) ?: mutableSetOf()
+
+        } catch (e: Exception) {
+
+            mutableSetOf()
+        }
+    }
+
+    private fun saveFavorites(
+        favorites: MutableSet<String>
+    ) {
+
+        FileStorageManager.writeText(
+            FILE_NAME,
+            Gson().toJson(favorites)
+        )
+    }
 
     fun isFavorite(
         context: Context,
         channelName: String
     ): Boolean {
 
-        return context
-            .getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
-            .getBoolean(
-                channelName,
-                false
-            )
+        return getFavorites()
+            .contains(channelName)
     }
 
     fun toggleFavorite(
@@ -27,23 +58,18 @@ object FavoriteManager {
         channelName: String
     ) {
 
-        val prefs =
-            context.getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
+        val favorites =
+            getFavorites()
 
-        val current =
-            prefs.getBoolean(
-                channelName,
-                false
-            )
+        if (favorites.contains(channelName)) {
 
-        prefs.edit()
-            .putBoolean(
-                channelName,
-                !current
-            )
-            .apply()
+            favorites.remove(channelName)
+
+        } else {
+
+            favorites.add(channelName)
+        }
+
+        saveFavorites(favorites)
     }
 }

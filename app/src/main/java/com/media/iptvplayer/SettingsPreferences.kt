@@ -1,79 +1,51 @@
 package com.media.iptvplayer
 
 import android.content.Context
-import com.google.gson.Gson
 
 object SettingsPreferences {
 
-    private const val FILE_NAME =
-        "settings.json"
+    private const val PREFS =
+        "media_iptv_settings"
 
-    private data class SettingsData(
+    private const val AUTO_HIDE =
+        "auto_hide"
 
-        var autoHide: Boolean = true,
+    private const val AUTO_LOAD_LAST_PLAYLIST =
+        "auto_load_last_playlist"
 
-        var autoLoadLastPlaylist: Boolean = true,
-
-        var autoLoadLastChannel: Boolean = true
-    )
-
-    private fun loadSettings():
-            SettingsData {
-
-        return try {
-
-            val json =
-                FileStorageManager.readText(
-                    FILE_NAME,
-                    ""
-                )
-
-            if (json.isEmpty()) {
-
-                SettingsData()
-
-            } else {
-
-                Gson().fromJson(
-                    json,
-                    SettingsData::class.java
-                ) ?: SettingsData()
-            }
-
-        } catch (e: Exception) {
-
-            SettingsData()
-        }
-    }
-
-    private fun saveSettings(
-        settings: SettingsData
-    ) {
-
-        FileStorageManager.writeText(
-            FILE_NAME,
-            Gson().toJson(settings)
-        )
-    }
+    private const val AUTO_LOAD_LAST_CHANNEL =
+        "auto_load_last_channel"
 
     fun setAutoHideEnabled(
         context: Context,
         enabled: Boolean
     ) {
 
-        val settings =
-            loadSettings()
-
-        settings.autoHide = enabled
-
-        saveSettings(settings)
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .putBoolean(
+                AUTO_HIDE,
+                enabled
+            )
+            .apply()
     }
 
     fun isAutoHideEnabled(
         context: Context
     ): Boolean {
 
-        return loadSettings().autoHide
+        return context
+            .getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE
+            )
+            .getBoolean(
+                AUTO_HIDE,
+                true
+            )
     }
 
     fun setAutoLoadLastPlaylistEnabled(
@@ -81,21 +53,31 @@ object SettingsPreferences {
         enabled: Boolean
     ) {
 
-        val settings =
-            loadSettings()
-
-        settings.autoLoadLastPlaylist =
-            enabled
-
-        saveSettings(settings)
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .putBoolean(
+                AUTO_LOAD_LAST_PLAYLIST,
+                enabled
+            )
+            .apply()
     }
 
     fun isAutoLoadLastPlaylistEnabled(
         context: Context
     ): Boolean {
 
-        return loadSettings()
-            .autoLoadLastPlaylist
+        return context
+            .getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE
+            )
+            .getBoolean(
+                AUTO_LOAD_LAST_PLAYLIST,
+                true
+            )
     }
 
     fun setAutoLoadLastChannelEnabled(
@@ -103,20 +85,30 @@ object SettingsPreferences {
         enabled: Boolean
     ) {
 
-        val settings =
-            loadSettings()
-
-        settings.autoLoadLastChannel =
-            enabled
-
-        saveSettings(settings)
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .putBoolean(
+                AUTO_LOAD_LAST_CHANNEL,
+                enabled
+            )
+            .apply()
     }
 
     fun isAutoLoadLastChannelEnabled(
         context: Context
     ): Boolean {
 
-        return loadSettings()
-            .autoLoadLastChannel
+        return context
+            .getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE
+            )
+            .getBoolean(
+                AUTO_LOAD_LAST_CHANNEL,
+                true
+            )
     }
 }

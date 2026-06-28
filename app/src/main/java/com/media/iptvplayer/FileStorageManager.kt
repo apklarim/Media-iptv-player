@@ -1,16 +1,16 @@
 package com.media.iptvplayer
 
-import android.os.Environment
+import android.content.Context
 import java.io.File
 
 object FileStorageManager {
 
-    private fun getFolder(): File {
+    private fun getFolder(
+        context: Context
+    ): File {
 
         val dir = File(
-            Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS
-            ),
+            context.getExternalFilesDir(null),
             "MediaIPTV"
         )
 
@@ -22,25 +22,28 @@ object FileStorageManager {
     }
 
     fun writeText(
+        context: Context,
         fileName: String,
         text: String
     ) {
 
         File(
-            getFolder(),
+            getFolder(context),
             fileName
         ).writeText(text)
     }
 
     fun readText(
+        context: Context,
         fileName: String,
         defaultValue: String = ""
     ): String {
 
-        val file = File(
-            getFolder(),
-            fileName
-        )
+        val file =
+            File(
+                getFolder(context),
+                fileName
+            )
 
         return if (file.exists()) {
             file.readText()

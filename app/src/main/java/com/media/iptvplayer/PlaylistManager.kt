@@ -7,18 +7,33 @@ import com.media.iptvplayer.model.Playlist
 
 object PlaylistManager {
 
-    private const val PREFS = "media_iptv_player"
-    private const val KEY = "playlists"
+    private const val FILE_NAME =
+        "playlists.json"
 
-    fun getPlaylists(context: Context): MutableList<Playlist> {
+    fun getPlaylists(
+        context: Context
+    ): MutableList<Playlist> {
 
-        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val json =
+            FileStorageManager.readText(
+                FILE_NAME,
+                "[]"
+            )
 
-        val json = prefs.getString(KEY, "[]")
+        val type =
+            object : TypeToken<MutableList<Playlist>>() {}.type
 
-        val type = object : TypeToken<MutableList<Playlist>>() {}.type
+        return try {
 
-        return Gson().fromJson(json, type)
+            Gson().fromJson(
+                json,
+                type
+            ) ?: mutableListOf()
+
+        } catch (e: Exception) {
+
+            mutableListOf()
+        }
     }
 
     fun savePlaylists(
@@ -26,11 +41,10 @@ object PlaylistManager {
         playlists: MutableList<Playlist>
     ) {
 
-        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-
-        prefs.edit()
-            .putString(KEY, Gson().toJson(playlists))
-            .apply()
+        FileStorageManager.writeText(
+            FILE_NAME,
+            Gson().toJson(playlists)
+        )
     }
 
     fun addPlaylist(
@@ -38,11 +52,15 @@ object PlaylistManager {
         playlist: Playlist
     ) {
 
-        val list = getPlaylists(context)
+        val list =
+            getPlaylists(context)
 
         list.add(playlist)
 
-        savePlaylists(context, list)
+        savePlaylists(
+            context,
+            list
+        )
     }
 
     fun deletePlaylist(
@@ -50,10 +68,16 @@ object PlaylistManager {
         id: Long
     ) {
 
-        val list = getPlaylists(context)
+        val list =
+            getPlaylists(context)
 
-        list.removeAll { it.id == id }
+        list.removeAll {
+            it.id == id
+        }
 
-        savePlaylists(context, list)
+        savePlaylists(
+            context,
+            list
+        )
     }
 }

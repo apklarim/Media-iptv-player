@@ -1,51 +1,79 @@
 package com.media.iptvplayer
 
 import android.content.Context
+import com.google.gson.Gson
 
 object SettingsPreferences {
 
-    private const val PREFS =
-        "media_iptv_settings"
+    private const val FILE_NAME =
+        "settings.json"
 
-    private const val AUTO_HIDE =
-        "auto_hide"
+    private data class SettingsData(
 
-    private const val AUTO_LOAD_LAST_PLAYLIST =
-        "auto_load_last_playlist"
+        var autoHide: Boolean = true,
 
-    private const val AUTO_LOAD_LAST_CHANNEL =
-        "auto_load_last_channel"
+        var autoLoadLastPlaylist: Boolean = true,
+
+        var autoLoadLastChannel: Boolean = true
+    )
+
+    private fun loadSettings():
+            SettingsData {
+
+        return try {
+
+            val json =
+                FileStorageManager.readText(
+                    FILE_NAME,
+                    ""
+                )
+
+            if (json.isEmpty()) {
+
+                SettingsData()
+
+            } else {
+
+                Gson().fromJson(
+                    json,
+                    SettingsData::class.java
+                ) ?: SettingsData()
+            }
+
+        } catch (e: Exception) {
+
+            SettingsData()
+        }
+    }
+
+    private fun saveSettings(
+        settings: SettingsData
+    ) {
+
+        FileStorageManager.writeText(
+            FILE_NAME,
+            Gson().toJson(settings)
+        )
+    }
 
     fun setAutoHideEnabled(
         context: Context,
         enabled: Boolean
     ) {
 
-        context.getSharedPreferences(
-            PREFS,
-            Context.MODE_PRIVATE
-        )
-            .edit()
-            .putBoolean(
-                AUTO_HIDE,
-                enabled
-            )
-            .apply()
+        val settings =
+            loadSettings()
+
+        settings.autoHide = enabled
+
+        saveSettings(settings)
     }
 
     fun isAutoHideEnabled(
         context: Context
     ): Boolean {
 
-        return context
-            .getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
-            .getBoolean(
-                AUTO_HIDE,
-                true
-            )
+        return loadSettings().autoHide
     }
 
     fun setAutoLoadLastPlaylistEnabled(
@@ -53,31 +81,21 @@ object SettingsPreferences {
         enabled: Boolean
     ) {
 
-        context.getSharedPreferences(
-            PREFS,
-            Context.MODE_PRIVATE
-        )
-            .edit()
-            .putBoolean(
-                AUTO_LOAD_LAST_PLAYLIST,
-                enabled
-            )
-            .apply()
+        val settings =
+            loadSettings()
+
+        settings.autoLoadLastPlaylist =
+            enabled
+
+        saveSettings(settings)
     }
 
     fun isAutoLoadLastPlaylistEnabled(
         context: Context
     ): Boolean {
 
-        return context
-            .getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
-            .getBoolean(
-                AUTO_LOAD_LAST_PLAYLIST,
-                true
-            )
+        return loadSettings()
+            .autoLoadLastPlaylist
     }
 
     fun setAutoLoadLastChannelEnabled(
@@ -85,30 +103,20 @@ object SettingsPreferences {
         enabled: Boolean
     ) {
 
-        context.getSharedPreferences(
-            PREFS,
-            Context.MODE_PRIVATE
-        )
-            .edit()
-            .putBoolean(
-                AUTO_LOAD_LAST_CHANNEL,
-                enabled
-            )
-            .apply()
+        val settings =
+            loadSettings()
+
+        settings.autoLoadLastChannel =
+            enabled
+
+        saveSettings(settings)
     }
 
     fun isAutoLoadLastChannelEnabled(
         context: Context
     ): Boolean {
 
-        return context
-            .getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
-            .getBoolean(
-                AUTO_LOAD_LAST_CHANNEL,
-                true
-            )
+        return loadSettings()
+            .autoLoadLastChannel
     }
 }

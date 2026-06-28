@@ -1,3 +1,5 @@
+package com.media.iptvplayer
+
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle

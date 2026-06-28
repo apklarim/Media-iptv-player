@@ -4,56 +4,89 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="#000000">
+
+    <!-- PLAYER -->
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:resize_mode="zoom"
+        app:resize_mode="fit"
         app:show_timeout="5000"
         app:use_controller="true"
         app:show_rewind_button="true"
         app:show_fastforward_button="true"
         app:show_previous_button="false"
-        app:show_next_button="false" />
+        app:show_next_button="false"/>
+
+    <!-- KANAL LİSTESİ -->
 
     <ListView
         android:id="@+id/listChannels"
-        android:layout_width="300dp"
+        android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#CC000000"
-        android:divider="#33FFFFFF"
+        android:background="#E610242D"
+        android:divider="#22FFFFFF"
         android:dividerHeight="1dp"
-        android:visibility="gone" />
+        android:padding="8dp"
+        android:visibility="gone"/>
+
+    <!-- KANAL BİLGİSİ -->
+
+    <LinearLayout
+        android:id="@+id/channelInfoBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="#AA000000"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/txtChannelName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KANAL ADI"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <!-- ALT KONTROL ÇUBUĞU -->
 
     <LinearLayout
         android:id="@+id/playerButtonsContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal">
+        android:layout_marginBottom="20dp"
+        android:background="#AA000000"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp">
 
         <Button
             android:id="@+id/btnPrev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/player_button_selector"
-            android:text="◀ Önceki"
-            android:textColor="#FFFFFF"
-            android:visibility="visible" />
+            android:text="◀◀"
+            android:textColor="#FFFFFF"/>
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="1dp"/>
 
         <Button
             android:id="@+id/btnNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:background="@drawable/player_button_selector"
-            android:text="Sonraki ▶"
-            android:textColor="#FFFFFF"
-            android:visibility="visible" />
+            android:text="▶▶"
+            android:textColor="#FFFFFF"/>
 
     </LinearLayout>
 

@@ -11,7 +11,9 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 
@@ -59,13 +61,45 @@ class DualPlayerActivity : AppCompatActivity() {
         playerView2.resizeMode =
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
-        player1 = ExoPlayer.Builder(this).build()
-        player2 = ExoPlayer.Builder(this).build()
+        val dataSourceFactory1 =
+            DefaultHttpDataSource.Factory()
+                .setUserAgent(
+                    "MediaIPTVPlayer-1"
+                )
+                .setAllowCrossProtocolRedirects(true)
+                .setConnectTimeoutMs(30000)
+                .setReadTimeoutMs(30000)
+
+        val dataSourceFactory2 =
+            DefaultHttpDataSource.Factory()
+                .setUserAgent(
+                    "MediaIPTVPlayer-2"
+                )
+                .setAllowCrossProtocolRedirects(true)
+                .setConnectTimeoutMs(30000)
+                .setReadTimeoutMs(30000)
+
+        player1 =
+            ExoPlayer.Builder(this)
+                .setMediaSourceFactory(
+                    DefaultMediaSourceFactory(
+                        dataSourceFactory1
+                    )
+                )
+                .build()
+
+        player2 =
+            ExoPlayer.Builder(this)
+                .setMediaSourceFactory(
+                    DefaultMediaSourceFactory(
+                        dataSourceFactory2
+                    )
+                )
+                .build()
 
         playerView1.player = player1
         playerView2.player = player2
 
-        // Başlangıçta sadece ilk oynatıcının sesi açık
         player1.volume = 1f
         player2.volume = 0f
 
@@ -131,7 +165,6 @@ class DualPlayerActivity : AppCompatActivity() {
 
         playerView1.setOnClickListener {
 
-            // Ses sadece ilk oynatıcıdan gelsin
             player1.volume = 1f
             player2.volume = 0f
 
@@ -146,7 +179,6 @@ class DualPlayerActivity : AppCompatActivity() {
 
         playerView2.setOnClickListener {
 
-            // Ses sadece ikinci oynatıcıdan gelsin
             player1.volume = 0f
             player2.volume = 1f
 
@@ -185,6 +217,7 @@ class DualPlayerActivity : AppCompatActivity() {
     private fun playOnPlayer1(url: String) {
 
         player1.stop()
+        player1.clearMediaItems()
 
         player1.setMediaItem(
             MediaItem.fromUri(
@@ -199,6 +232,7 @@ class DualPlayerActivity : AppCompatActivity() {
     private fun playOnPlayer2(url: String) {
 
         player2.stop()
+        player2.clearMediaItems()
 
         player2.setMediaItem(
             MediaItem.fromUri(

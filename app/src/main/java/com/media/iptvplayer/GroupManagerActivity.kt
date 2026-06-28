@@ -14,7 +14,7 @@ class GroupManagerActivity : AppCompatActivity() {
     private lateinit var btnClearSelection: Button
     private lateinit var btnHideSelected: Button
 
-    private lateinit var groups: List<String>
+    private var groups = listOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -67,4 +67,26 @@ class GroupManagerActivity : AppCompatActivity() {
             }
         }
 
-        btnHideSelected
+        btnHideSelected.setOnClickListener {
+
+            for (i in groups.indices) {
+
+                if (listGroups.isItemChecked(i)) {
+
+                    HiddenGroupsManager.hideGroup(
+                        this,
+                        groups[i]
+                    )
+                }
+            }
+
+            Toast.makeText(
+                this,
+                "Seçilen gruplar gizlendi",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            finish()
+        }
+    }
+}

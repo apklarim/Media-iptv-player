@@ -34,6 +34,11 @@
         <activity
             android:name=".HiddenGroupsActivity" />
 
+        <!-- Yeni eklendi -->
+        <activity
+            android:name=".GroupManagerActivity"
+            android:exported="false" />
+
         <activity
             android:name=".PlaylistListActivity" />
 

@@ -11,6 +11,15 @@
     android:focusable="true"
     android:clickable="true">
 
+    <!-- GİZLİ LOGO (Kod için gerekli) -->
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_media_logo" />
+
     <!-- Kanal Numarası -->
 
     <TextView
@@ -34,7 +43,9 @@
         android:text="TRT 1 HD"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end"/>
 
     <!-- Favori -->
 

@@ -1,199 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#07161D"
-    android:fillViewport="true">
+    android:orientation="horizontal"
+    android:background="#07161D">
+
+    <!-- SOL MENÜ -->
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:background="#0D2028"
+        android:padding="12dp">
 
-        <!-- Logo -->
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_media_logo" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingBottom="24dp">
-
-            <ImageView
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:src="@drawable/ic_media_logo" />
+            android:id="@+id/btnLiveTv"
+            style="@style/HomeMenuButton">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="MEDYA IPTV PLAYER"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:layout_marginTop="10dp"/>
-
+                style="@style/HomeMenuText"
+                android:text="📺 CANLI TV"/>
         </LinearLayout>
-
-        <!-- Satır 1 -->
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:id="@+id/btnMovies"
+            style="@style/HomeMenuButton">
 
-            <LinearLayout
-                android:id="@+id/btnLiveTv"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/focus_selector"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:text="📺"
-                    android:textSize="48sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:text="CANLI TV"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/btnMovies"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/focus_selector"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:text="🎬"
-                    android:textSize="48sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:text="FİLMLER"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
+            <TextView
+                style="@style/HomeMenuText"
+                android:text="🎬 FİLMLER"/>
         </LinearLayout>
-
-        <!-- Satır 2 -->
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:id="@+id/btnSeries"
+            style="@style/HomeMenuButton">
 
-            <LinearLayout
-                android:id="@+id/btnSeries"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/focus_selector"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:text="📚"
-                    android:textSize="48sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:text="DİZİLER"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/btnPlaylists"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/focus_selector"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:text="🗂️"
-                    android:textSize="48sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:text="LİSTELER"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:layout_marginTop="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
+            <TextView
+                style="@style/HomeMenuText"
+                android:text="📚 DİZİLER"/>
         </LinearLayout>
 
-        <!-- Ayarlar -->
+        <LinearLayout
+            android:id="@+id/btnPlaylists"
+            style="@style/HomeMenuButton">
+
+            <TextView
+                style="@style/HomeMenuText"
+                android:text="🗂️ LİSTELER"/>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/btnSettings"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_margin="6dp"
-            android:background="@drawable/focus_selector"
-            android:gravity="center"
-            android:orientation="horizontal">
+            style="@style/HomeMenuButton">
 
             <TextView
-                android:text="⚙️"
-                android:textSize="40sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="AYARLAR"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:textSize="26sp"
-                android:layout_marginStart="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
+                style="@style/HomeMenuText"
+                android:text="⚙️ AYARLAR"/>
         </LinearLayout>
 
     </LinearLayout>
 
-</ScrollView>
+    <!-- SAĞ TARAF -->
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hoş Geldiniz"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/cardLive"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/home_card_background"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="📺"
+                        android:textSize="54sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="CANLI TV"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginTop="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardMovies"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/home_card_background"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="🎬"
+                        android:textSize="54sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="FİLMLER"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginTop="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

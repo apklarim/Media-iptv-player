@@ -7,7 +7,8 @@ import com.media.iptvplayer.model.Playlist
 
 object PlaylistManager {
 
-    private const val FILE_NAME = "playlists.json"
+    private const val FILE_NAME =
+        "playlists.json"
 
     fun getPlaylists(
         context: Context
@@ -15,7 +16,6 @@ object PlaylistManager {
 
         val json =
             FileStorageManager.readText(
-                context,
                 FILE_NAME,
                 "[]"
             )
@@ -42,7 +42,6 @@ object PlaylistManager {
     ) {
 
         FileStorageManager.writeText(
-            context,
             FILE_NAME,
             Gson().toJson(playlists)
         )
@@ -53,7 +52,8 @@ object PlaylistManager {
         playlist: Playlist
     ) {
 
-        val list = getPlaylists(context)
+        val list =
+            getPlaylists(context)
 
         list.add(playlist)
 
@@ -68,7 +68,8 @@ object PlaylistManager {
         id: Long
     ) {
 
-        val list = getPlaylists(context)
+        val list =
+            getPlaylists(context)
 
         list.removeAll {
             it.id == id

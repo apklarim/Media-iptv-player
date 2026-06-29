@@ -9,22 +9,24 @@
     android:paddingEnd="12dp"
     android:background="#10242D">
 
+    <!-- Gizli logo (uygulamanın hata vermemesi için gerekli) -->
+
     <ImageView
         android:id="@+id/imgLogo"
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:visibility="gone"
-        android:src="@drawable/ic_media_logo"/>
+        android:src="@drawable/ic_media_logo" />
+
+    <!-- Gizli kanal numarası -->
 
     <TextView
         android:id="@+id/txtChannelNumber"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="1"
-        android:textColor="#00D4AA"
-        android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="gone" />
+
+    <!-- Kanal adı -->
 
     <TextView
         android:id="@+id/txtChannelName"
@@ -36,12 +38,14 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:maxLines="1"
-        android:ellipsize="end"/>
+        android:ellipsize="end" />
+
+    <!-- Favori simgesi -->
 
     <ImageView
         android:id="@+id/imgFavorite"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:src="@android:drawable/btn_star_big_off"/>
+        android:src="@android:drawable/btn_star_big_off" />
 
 </LinearLayout>
